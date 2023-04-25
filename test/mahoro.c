@@ -159,7 +159,9 @@ mahoro_load(self, path)
 void Init_mahoro(void)
 {
 	cMahoro      = rb_define_class("Mahoro", rb_cObject);
+	rb_undef_alloc_func(cMahoro);
 	eMahoroError = rb_define_class_under(cMahoro, "Error", rb_eStandardError);
+	rb_undef_alloc_func(eMahoroError);
 
 	rb_const_set(cMahoro, rb_intern("NONE"), INT2FIX(MAGIC_NONE));
 	rb_const_set(cMahoro, rb_intern("DEBUG"), INT2FIX(MAGIC_DEBUG));

@@ -2,6 +2,8 @@
 
 ## 0.8.0 [2023-11-??]
 
+* Remove Warning 'warning: undefining the allocator of T_DATA class FileMagic'
+
 * Require ruby version 3.0.0 or later.
 
 * Separate error messages for missing header and library in extconf.rb
