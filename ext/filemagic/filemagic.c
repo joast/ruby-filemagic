@@ -210,6 +210,7 @@ void
 Init_ruby_filemagic() {
   char version[16] = "0";
   cFileMagic = rb_define_class("FileMagic", rb_cObject);
+  rb_undef_alloc_func(cFileMagic);
 
 #if defined(FILE_VERSION_MAJOR)
   RB_MAGIC_SET_VERSION(FILE_VERSION_MAJOR, patchlevel)
@@ -240,6 +241,7 @@ Init_ruby_filemagic() {
   rb_alias(cFileMagic, rb_intern("valid?"), rb_intern("check"));
 
   rb_FileMagicError = rb_define_class_under(cFileMagic, "FileMagicError", rb_eStandardError);
+  rb_undef_alloc_func(rb_FileMagicError);
 
 #ifdef MAGIC_NONE
   rb_define_const(cFileMagic, "MAGIC_NONE",              INT2FIX(MAGIC_NONE));
