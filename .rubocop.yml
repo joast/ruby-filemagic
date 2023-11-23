@@ -1,0 +1,13 @@
+require:
+  - rubocop-disable_syntax
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.0
+  NewCops: enable
+
+Style:
+  Encoding: disable
