@@ -2,11 +2,12 @@
 
 ## VERSION
 
-This documentation refers to filemagic version 0.7.3
+This documentation refers to filemagic version 0.7.3+
 
 ## DESCRIPTION
 
-FileMagic extension module. See also libmagic(3), file(1) and magic(4).
+FileMagic extension module. See also libmagic(3), file(1), and magic(5).
+DO NOT USE!!! This is in the process of being improved.
 
 ### Constants
 
