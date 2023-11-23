@@ -1,9 +1,16 @@
+*.c crlf
+*.gz -crlf
+*.h crlf
+*.mgc -crlf
+*.rb crlf
 .gitattributes crlf
 .gitignore crlf
+.rubocop.yml crlf
 .travis.yml crlf
 CONTRIBUTING.md crlf
 ChangeLog crlf
 Dockerfile crlf
+Gemfile crlf
 README.md crlf
 Rakefile crlf
 TODO crlf
@@ -12,8 +19,3 @@ test/a-text-file crlf
 test/excel-example.xls -crlf
 test/perl crlf
 test/pyfile crlf
-*.rb crlf
-*.c crlf
-*.h crlf
-*.mgc -crlf
-*.gz -crlf
