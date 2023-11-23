@@ -1,0 +1,3 @@
+A simple ASCII text file that different verisons of file(1) should recognize as
+'ASCII text', 'text/plain; charset=us-ascii', and 'text/plain' for different
+tests.
