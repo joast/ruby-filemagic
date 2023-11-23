@@ -8,7 +8,7 @@
 .rubocop.yml crlf
 .travis.yml crlf
 CONTRIBUTING.md crlf
-ChangeLog crlf
+ChangeLog.md crlf
 Dockerfile crlf
 Gemfile crlf
 README.md crlf
