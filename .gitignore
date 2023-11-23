@@ -1,11 +1,8 @@
-doc
-doc.local
+*.o
+*.so
+.gh-pages
+Makefile
+magic.mgc
+mkmf.log
 pkg
 tmp
-.gh-pages
-ext/Makefile
-ext/filemagic.o
-ext/filemagic.so
-ext/mkmf.log
-lib/filemagic.so
-lib/**/*.mgc
