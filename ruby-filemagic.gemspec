@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
     'homepage_uri' => s.homepage,
     'source_code_uri' => s.homepage,
     'bug_tracker_uri' => "#{s.homepage}/issues",
-    'changelog_uri' => "#{s.homepage}/ChangeLog"
+    'changelog_uri' => "#{s.homepage}/ChangeLog.md"
   }
 
   s.require_paths = ['lib']
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.description = 'Ruby bindings to libmagic(3).'
   s.email = 'rick_ohnemus@acm.org'
   s.extensions = ['ext/filemagic/extconf.rb']
-  s.extra_rdoc_files = ['README.md', 'ChangeLog', 'ext/filemagic/filemagic.c']
+  s.extra_rdoc_files = ['README.md', 'ChangeLog.md', 'ext/filemagic/filemagic.c']
 
   s.files = [
     'CONTRIBUTING.md',
