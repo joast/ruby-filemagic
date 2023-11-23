@@ -47,6 +47,7 @@ DO NOT USE!!! This is in the process of being improved.
 
 ### Synopsis
 
+```ruby
     require 'filemagic'
 
     p FileMagic::VERSION
@@ -77,6 +78,7 @@ DO NOT USE!!! This is in the process of being improved.
     mime = FileMagic.mime
     p mime.flags
     # => [:mime_type, :mime_encoding]
+```
 
 ### Environment
 
@@ -111,38 +113,34 @@ Requires [Docker](https://docker.com) to be installed.
 
 ## LINKS
 
-Homepage
-:   https://www.darwinsys.com/file/
-Documentation
-:   https://blackwinter.github.io/ruby-filemagic
-Source code
-:   https://github.com/blackwinter/ruby-filemagic
-RubyGem
-:   https://rubygems.org/gems/ruby-filemagic
-Travis CI
-:   https://travis-ci.org/blackwinter/ruby-filemagic
+* [file(1) homepage](https://www.darwinsys.com/file/)
+* [Documentation](https://blackwinter.github.io/ruby-filemagic)
+* [Source code](https://github.com/joast/ruby-filemagic)
+* [RubyGem](https://rubygems.org/gems/ruby-filemagic)
+* [Travis CI](https://travis-ci.org/blackwinter/ruby-filemagic)
 
 
 ## AUTHORS
 
-*   Travis Whitton <mailto:tinymountain@gmail.com> (Original author)
-*   Jens Wille <mailto:jens.wille@gmail.com>
+* [Travis Whitton](mailto:tinymountain@gmail.com) (Original author)
+* [Jens Wille](mailto:jens.wille@gmail.com) (Previous author up to 0.7.3)
+* [Rick Ohnemus](mailto:rick_ohnemus@acm.org) (Current author)
 
 
 ## CREDITS
 
-*   Martin Carpenter <mailto:mcarpenter@free.fr> for Ruby 1.9.2 compatibility
-    and other improvements.
+* [Martin Carpenter](mailto:mcarpenter@free.fr) for Ruby 1.9.2 compatibility
+  and other improvements.
 
-*   Pavel Lobashov (@ShockwaveNN) for Dockerfile to build cross-compiled
-    Windows extension (pull request #26).
+* [Pavel Lobashov](@ShockwaveNN) for Dockerfile to build cross-compiled
+  Windows extension (pull request #26).
 
 
 ## COPYING
 
-The filemagic extension library is copywrited free software by Travis Whitton
-<tinymountain@gmail.com>. You can redistribute it under the terms specified in
-the COPYING file of the Ruby distribution.
+The filemagic extension library is copywrited free software by [Travis
+Whitton](mailto:tinymountain@gmail.com). You can redistribute it under the
+terms specified in the COPYING file of the Ruby distribution.
 
 ## WARRANTY
 
