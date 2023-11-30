@@ -1,11 +1,13 @@
 # -*- encoding: utf-8 -*-
-# stub: ruby-filemagic 0.7.3 ruby lib
-# stub: ext/filemagic/extconf.rb
 # frozen_string_literal: true
+# stub: ruby-filemagic 0.8.0 ruby lib
+# stub: ext/filemagic/extconf.rb
+
+require_relative 'lib/filemagic/version'
 
 Gem::Specification.new do |s|
   s.name = 'ruby-filemagic'
-  s.version = '0.7.3'
+  s.version = FileMagic::VERSION
   s.homepage = 'http://github.com/joast/ruby-filemagic'
   s.licenses = ['Ruby']
 
@@ -49,10 +51,10 @@ Gem::Specification.new do |s|
     'test/pyfile-compressed.gz'
   ]
 
-  s.post_install_message = "\nruby-filemagic-0.7.3+ [2023-11-??]:\n\n*** DO NOT USE!!! ***\n\n"
+  s.post_install_message = "\nruby-filemagic-#{FileMagic::VERSION} [2023-11-??]:\n\n*** DO NOT USE!!! ***\n\n"
 
   s.rdoc_options = [
-    '--title', 'ruby-filemagic Application documentation (v0.7.3+)',
+    '--title', "ruby-filemagic documentation (v#{FileMagic::VERSION})",
     '--charset', 'UTF-8', '--line-numbers', '--all', '--main', 'README.md'
   ]
 

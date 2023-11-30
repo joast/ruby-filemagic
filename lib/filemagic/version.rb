@@ -1,13 +1,12 @@
+# frozen_string_literal: true
+
 class FileMagic
-
-  module Version
-
+  module Version # :nodoc:
     MAJOR = 0
-    MINOR = 7
-    TINY  = 3
+    MINOR = 8
+    TINY  = 0
 
     class << self
-
       # Returns array representation.
       def to_a
         [MAJOR, MINOR, TINY]
@@ -17,11 +16,9 @@ class FileMagic
       def to_s
         to_a.join('.')
       end
-
     end
-
   end
 
+  # FileMagic version.
   VERSION = Version.to_s
-
 end
