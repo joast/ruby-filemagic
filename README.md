@@ -2,7 +2,7 @@
 
 ## VERSION
 
-This documentation refers to filemagic version 0.7.3+
+This documentation refers to FileMagic version 0.8.0
 
 ## DESCRIPTION
 
@@ -51,9 +51,9 @@ DO NOT USE!!! This is in the process of being improved.
     require 'filemagic'
 
     p FileMagic::VERSION
-    # => "0.7.3"
+    # => "0.8.0"
     p FileMagic::MAGIC_VERSION
-    # => "5.39"
+    # => "5.45"
 
     p FileMagic.new.flags
     # => []
