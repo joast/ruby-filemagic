@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
-# stub: ruby-filemagic 0.7.3 ruby lib
+# stub: ruby-filemagic 0.8.0 ruby lib
 # stub: ext/filemagic/extconf.rb
 
 Gem::Specification.new do |s|
   s.name = "ruby-filemagic".freeze
-  s.version = "0.7.3"
+  s.version = "0.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.files = ["CONTRIBUTING.md".freeze, "ChangeLog".freeze, "Dockerfile".freeze, "README".freeze, "Rakefile".freeze, "TODO".freeze, "ext/filemagic/extconf.rb".freeze, "ext/filemagic/filemagic.c".freeze, "ext/filemagic/filemagic.h".freeze, "lib/filemagic.rb".freeze, "lib/filemagic/ext.rb".freeze, "lib/filemagic/magic.mgc".freeze, "lib/filemagic/version.rb".freeze, "lib/ruby-filemagic.rb".freeze, "test/excel-example.xls".freeze, "test/filemagic_test.rb".freeze, "test/leaktest.rb".freeze, "test/mahoro.c".freeze, "test/perl".freeze, "test/perl.mgc".freeze, "test/pyfile".freeze, "test/pyfile-compressed.gz".freeze]
   s.homepage = "http://github.com/blackwinter/ruby-filemagic".freeze
   s.licenses = ["Ruby".freeze]
-  s.post_install_message = "\nruby-filemagic-0.7.3 [2022-01-07]:\n\n* Dockerfile to build native extension (pull request #26 by Pavel Lobashov).\n* Include paths for ARM-based Apple Macs (Apple Silicon) (pull request #35 by\n  @545ch4).\n\n".freeze
-  s.rdoc_options = ["--title".freeze, "ruby-filemagic Application documentation (v0.7.3)".freeze, "--charset".freeze, "UTF-8".freeze, "--line-numbers".freeze, "--all".freeze, "--main".freeze, "README".freeze]
+  s.post_install_message = "\nruby-filemagic-0.8.0 [unreleased]:\n\n* Dockerfile to build native extension (pull request #26 by Pavel Lobashov).\n* Include paths for ARM-based Apple Macs (Apple Silicon) (pull request #35 by\n  @545ch4).\n\n".freeze
+  s.rdoc_options = ["--title".freeze, "ruby-filemagic Application documentation (v0.8.0)".freeze, "--charset".freeze, "UTF-8".freeze, "--line-numbers".freeze, "--all".freeze, "--main".freeze, "README".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
   s.rubygems_version = "3.2.5".freeze
   s.summary = "Ruby bindings to the magic(4) library".freeze
