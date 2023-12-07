@@ -24,11 +24,21 @@ Gem::Specification.new do |s|
   s.description = 'Ruby bindings to libmagic(3).'
   s.email = 'rick_ohnemus@acm.org'
   s.extensions = ['ext/filemagic/extconf.rb']
+
   s.extra_rdoc_files = ['README.md', 'ChangeLog.md', 'ext/filemagic/filemagic.c']
 
+  s.rdoc_options.concat([
+    "--title='ruby-filemagic documentation (v#{FileMagic::VERSION})'",
+    '--charset=UTF-8',
+    '--line-numbers',
+    '--all',
+    '--main=README.md',
+    '--verbose'
+  ])
+
   s.files = [
-    'CONTRIBUTING.md',
-    'ChangeLog',
+    'CODE_OF_CONDUCT.md',
+    'ChangeLog.md',
     'Dockerfile',
     'README.md',
     'Rakefile',
@@ -52,11 +62,6 @@ Gem::Specification.new do |s|
   ]
 
   s.post_install_message = "\nruby-filemagic-#{FileMagic::VERSION} [2023-11-??]:\n\n*** DO NOT USE!!! ***\n\n"
-
-  s.rdoc_options = [
-    '--title', "ruby-filemagic documentation (v#{FileMagic::VERSION})",
-    '--charset', 'UTF-8', '--line-numbers', '--all', '--main', 'README.md'
-  ]
 
   s.required_ruby_version = '>= 3.0.0'
 end
