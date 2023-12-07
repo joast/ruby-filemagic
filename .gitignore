@@ -2,6 +2,8 @@
 *.so
 .gh-pages
 Makefile
+doc
+doc.local
 magic.mgc
 mkmf.log
 pkg
