@@ -217,6 +217,7 @@ Init_ruby_filemagic() {
   RB_MAGIC_SET_VERSION(MAGIC_VERSION / 100, MAGIC_VERSION % 100)
 #endif
 
+  /* Version of libmagic(3) this version of ruby-filemagic was built with. */
   rb_define_const(cFileMagic, "MAGIC_VERSION", rb_str_new2(version));
 
   rb_define_singleton_method(cFileMagic, "library_version", rb_magic_version,  0);
@@ -241,95 +242,178 @@ Init_ruby_filemagic() {
 
   rb_FileMagicError = rb_define_class_under(cFileMagic, "FileMagicError", rb_eStandardError);
 
+  /*======= BEGIN CONSTANTS =======*/
 #ifdef MAGIC_NONE
-  rb_define_const(cFileMagic, "MAGIC_NONE",              INT2FIX(MAGIC_NONE));
+  /* No special handling. */
+  rb_define_const(cFileMagic, "MAGIC_NONE", INT2FIX(MAGIC_NONE));
 #endif
 #ifdef MAGIC_DEBUG
-  rb_define_const(cFileMagic, "MAGIC_DEBUG",             INT2FIX(MAGIC_DEBUG));
+  /* Print debugging messages to stderr. */
+  rb_define_const(cFileMagic, "MAGIC_DEBUG", INT2FIX(MAGIC_DEBUG));
 #endif
 #ifdef MAGIC_SYMLINK
-  rb_define_const(cFileMagic, "MAGIC_SYMLINK",           INT2FIX(MAGIC_SYMLINK));
+  /* If the file queried is a symlink, follow it. */
+  rb_define_const(cFileMagic, "MAGIC_SYMLINK", INT2FIX(MAGIC_SYMLINK));
 #endif
 #ifdef MAGIC_COMPRESS
-  rb_define_const(cFileMagic, "MAGIC_COMPRESS",          INT2FIX(MAGIC_COMPRESS));
+  /* If the file is compressed, unpack it and look at the contents. */
+  rb_define_const(cFileMagic, "MAGIC_COMPRESS", INT2FIX(MAGIC_COMPRESS));
 #endif
 #ifdef MAGIC_DEVICES
-  rb_define_const(cFileMagic, "MAGIC_DEVICES",           INT2FIX(MAGIC_DEVICES));
+  /* If the file is a block or character special device, then open the device and try to look in its contents. */
+  rb_define_const(cFileMagic, "MAGIC_DEVICES", INT2FIX(MAGIC_DEVICES));
 #endif
 #ifdef MAGIC_MIME_TYPE
-  rb_define_const(cFileMagic, "MAGIC_MIME_TYPE",         INT2FIX(MAGIC_MIME_TYPE));
+  /* Return a MIME type string, instead of a textual description. */
+  rb_define_const(cFileMagic, "MAGIC_MIME_TYPE", INT2FIX(MAGIC_MIME_TYPE));
 #endif
 #ifdef MAGIC_CONTINUE
-  rb_define_const(cFileMagic, "MAGIC_CONTINUE",          INT2FIX(MAGIC_CONTINUE));
+  /* Return all matches, not just the first. */
+  rb_define_const(cFileMagic, "MAGIC_CONTINUE", INT2FIX(MAGIC_CONTINUE));
 #endif
 #ifdef MAGIC_CHECK
-  rb_define_const(cFileMagic, "MAGIC_CHECK",             INT2FIX(MAGIC_CHECK));
+  /* Check the magic database for consistency and print warnings to stderr. */
+  rb_define_const(cFileMagic, "MAGIC_CHECK", INT2FIX(MAGIC_CHECK));
 #endif
 #ifdef MAGIC_PRESERVE_ATIME
-  rb_define_const(cFileMagic, "MAGIC_PRESERVE_ATIME",    INT2FIX(MAGIC_PRESERVE_ATIME));
+  /* On systems that support utime(3) or utimes(2), attempt to preserve the access time of files analysed. */
+  rb_define_const(cFileMagic, "MAGIC_PRESERVE_ATIME", INT2FIX(MAGIC_PRESERVE_ATIME));
 #endif
 #ifdef MAGIC_RAW
-  rb_define_const(cFileMagic, "MAGIC_RAW",               INT2FIX(MAGIC_RAW));
+  /* Don't translate unprintable characters to a \ooo octal representation. */
+  rb_define_const(cFileMagic, "MAGIC_RAW", INT2FIX(MAGIC_RAW));
 #endif
 #ifdef MAGIC_ERROR
-  rb_define_const(cFileMagic, "MAGIC_ERROR",             INT2FIX(MAGIC_ERROR));
+  /* Treat operating system errors while trying to open files and follow symlinks as real errors, instead of printing them in the magic buffer. */
+  rb_define_const(cFileMagic, "MAGIC_ERROR", INT2FIX(MAGIC_ERROR));
 #endif
 #ifdef MAGIC_MIME_ENCODING
-  rb_define_const(cFileMagic, "MAGIC_MIME_ENCODING",     INT2FIX(MAGIC_MIME_ENCODING));
+  /* Return a MIME encoding, instead of a textual description. */
+  rb_define_const(cFileMagic, "MAGIC_MIME_ENCODING", INT2FIX(MAGIC_MIME_ENCODING));
 #endif
 #ifdef MAGIC_MIME
-  rb_define_const(cFileMagic, "MAGIC_MIME",              INT2FIX(MAGIC_MIME));
+  /* Shorthand for `MAGIC_MIME_TYPE \| MAGIC_MIME_ENCODING`. */
+  rb_define_const(cFileMagic, "MAGIC_MIME", INT2FIX(MAGIC_MIME));
 #endif
 #ifdef MAGIC_APPLE
-  rb_define_const(cFileMagic, "MAGIC_APPLE",             INT2FIX(MAGIC_APPLE));
+  /* Return the Apple creator and type. */
+  rb_define_const(cFileMagic, "MAGIC_APPLE", INT2FIX(MAGIC_APPLE));
 #endif
 #ifdef MAGIC_EXTENSION
-  rb_define_const(cFileMagic, "MAGIC_EXTENSION",         INT2FIX(MAGIC_EXTENSION));
+  /* Return a slash-separated list of extensions for this file type. */
+  rb_define_const(cFileMagic, "MAGIC_EXTENSION", INT2FIX(MAGIC_EXTENSION));
 #endif
 #ifdef MAGIC_COMPRESS_TRANSP
-  rb_define_const(cFileMagic, "MAGIC_COMPRESS_TRANSP",   INT2FIX(MAGIC_COMPRESS_TRANSP));
+  /* Don't report on compression, only report about the uncompressed data. */
+  rb_define_const(cFileMagic, "MAGIC_COMPRESS_TRANSP", INT2FIX(MAGIC_COMPRESS_TRANSP));
+#endif
+#ifdef MAGIC_NO_COMPRESS_FORK
+  /* Don't allow decompressors that use fork. */
+  rb_define_const(cFileMagic, "MAGIC_NO_COMPRESS_FORK", INT2FIX(MAGIC_NO_COMPRESS_FORK));
 #endif
 #ifdef MAGIC_NODESC
-  rb_define_const(cFileMagic, "MAGIC_NODESC",            INT2FIX(MAGIC_NODESC));
+  /* Shorthand for `MAGIC_EXTENSION \| MAGIC_MIME \| MAGIC_APPLE`. */
+  rb_define_const(cFileMagic, "MAGIC_NODESC", INT2FIX(MAGIC_NODESC));
 #endif
 #ifdef MAGIC_NO_CHECK_COMPRESS
+  /* Don't look inside compressed files. */
   rb_define_const(cFileMagic, "MAGIC_NO_CHECK_COMPRESS", INT2FIX(MAGIC_NO_CHECK_COMPRESS));
 #endif
 #ifdef MAGIC_NO_CHECK_TAR
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TAR",      INT2FIX(MAGIC_NO_CHECK_TAR));
+  /* Don't examine tar files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TAR", INT2FIX(MAGIC_NO_CHECK_TAR));
 #endif
 #ifdef MAGIC_NO_CHECK_SOFT
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_SOFT",     INT2FIX(MAGIC_NO_CHECK_SOFT));
+  /* Don't consult magic files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_SOFT", INT2FIX(MAGIC_NO_CHECK_SOFT));
 #endif
 #ifdef MAGIC_NO_CHECK_APPTYPE
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_APPTYPE",  INT2FIX(MAGIC_NO_CHECK_APPTYPE));
+  /* Don't check for EMX application type (only on EMX). */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_APPTYPE", INT2FIX(MAGIC_NO_CHECK_APPTYPE));
 #endif
 #ifdef MAGIC_NO_CHECK_ELF
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_ELF",      INT2FIX(MAGIC_NO_CHECK_ELF));
+  /* Don't print ELF details. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_ELF", INT2FIX(MAGIC_NO_CHECK_ELF));
 #endif
 #ifdef MAGIC_NO_CHECK_TEXT
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TEXT",     INT2FIX(MAGIC_NO_CHECK_TEXT));
+  /* Don't check for various types of text files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TEXT", INT2FIX(MAGIC_NO_CHECK_TEXT));
 #endif
 #ifdef MAGIC_NO_CHECK_CDF
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_CDF",      INT2FIX(MAGIC_NO_CHECK_CDF));
+  /* Don't get extra information on MS Composite Document Files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_CDF", INT2FIX(MAGIC_NO_CHECK_CDF));
+#endif
+#ifdef MAGIC_NO_CHECK_CSV
+  /* Don't examine CSV files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_CSV", INT2FIX(MAGIC_NO_CHECK_CSV));
 #endif
 #ifdef MAGIC_NO_CHECK_TOKENS
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TOKENS",   INT2FIX(MAGIC_NO_CHECK_TOKENS));
+  /* Don't look for known tokens inside ascii files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TOKENS", INT2FIX(MAGIC_NO_CHECK_TOKENS));
 #endif
 #ifdef MAGIC_NO_CHECK_ENCODING
+  /* Don't check text encodings. */
   rb_define_const(cFileMagic, "MAGIC_NO_CHECK_ENCODING", INT2FIX(MAGIC_NO_CHECK_ENCODING));
 #endif
-#if defined(MAGIC_NO_CHECK_BUILTIN) && MAGIC_VERSION > 514
-  /* defined in b5be901 (2010-01-28, 5.05), but broken until 38e0136 (2013-08-15, 5.15) */
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_BUILTIN",  INT2FIX(MAGIC_NO_CHECK_BUILTIN));
+#ifdef MAGIC_NO_CHECK_JSON
+  /* Don't examine JSON files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_JSON", INT2FIX(MAGIC_NO_CHECK_JSON));
+#endif
+#ifdef MAGIC_NO_CHECK_SIMH
+  /* Don't examine SIMH tape files. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_SIMH", INT2FIX(MAGIC_NO_CHECK_SIMH));
+#endif
+#ifdef MAGIC_NO_CHECK_BUILTIN
+  /* No built-in tests; only consult the magic file. Shorthand for `MAGIC_NO_CHECK_COMPRESS \| MAGIC_NO_CHECK_TAR \| MAGIC_NO_CHECK_APPTYPE \| MAGIC_NO_CHECK_ELF \| MAGIC_NO_CHECK_TEXT \| MAGIC_NO_CHECK_CSV \| MAGIC_NO_CHECK_CDF \| MAGIC_NO_CHECK_TOKENS \| MAGIC_NO_CHECK_ENCODING \| MAGIC_NO_CHECK_JSON \| MAGIC_NO_CHECK_SIMH`. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_BUILTIN", INT2FIX(MAGIC_NO_CHECK_BUILTIN));
 #endif
 #ifdef MAGIC_NO_CHECK_ASCII
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_ASCII",    INT2FIX(MAGIC_NO_CHECK_ASCII));
+  /* Defined for backwards compatibility. Renamed from MAGIC_NO_CHECK_TEXT. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_ASCII", INT2FIX(MAGIC_NO_CHECK_ASCII));
 #endif
 #ifdef MAGIC_NO_CHECK_FORTRAN
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_FORTRAN",  INT2FIX(MAGIC_NO_CHECK_FORTRAN));
+  /* Don't check ascii/fortran. Defined for backwards compatibility; does nothing. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_FORTRAN", INT2FIX(MAGIC_NO_CHECK_FORTRAN));
 #endif
 #ifdef MAGIC_NO_CHECK_TROFF
-  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TROFF",    INT2FIX(MAGIC_NO_CHECK_TROFF));
+  /* Don't check ascii/troff. Defined for backwards compatibility; does nothing. */
+  rb_define_const(cFileMagic, "MAGIC_NO_CHECK_TROFF", INT2FIX(MAGIC_NO_CHECK_TROFF));
 #endif
+#ifdef MAGIC_PARAM_INDIR_MAX
+  /* How many levels of recursion will be followed for indirect magic entries. Default is 50. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_INDIR_MAX", INT2FIX(MAGIC_PARAM_INDIR_MAX));
+#endif
+#ifdef MAGIC_PARAM_NAME_MAX
+  /* The maximum number of calls for name/use. Default is 50. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_NAME_MAX", INT2FIX(MAGIC_PARAM_NAME_MAX));
+#endif
+#ifdef MAGIC_PARAM_ELF_PHNUM_MAX
+  /* How many ELF program sections will be processed. Default is 2,048. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_ELF_PHNUM_MAX", INT2FIX(MAGIC_PARAM_ELF_PHNUM_MAX));
+#endif
+#ifdef MAGIC_PARAM_ELF_SHNUM_MAX
+  /* How many ELF sections will be processed. Default is 32,768. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_ELF_SHNUM_MAX", INT2FIX(MAGIC_PARAM_ELF_SHNUM_MAX));
+#endif
+#ifdef MAGIC_PARAM_ELF_NOTES_MAX
+  /* How many ELF notes will be processed. Default is 256. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_ELF_NOTES_MAX", INT2FIX(MAGIC_PARAM_ELF_NOTES_MAX));
+#endif
+#ifdef MAGIC_PARAM_REGEX_MAX
+  /* Length limit for REGEX searches. Default is 8,192. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_REGEX_MAX", INT2FIX(MAGIC_PARAM_REGEX_MAX));
+#endif
+#ifdef MAGIC_PARAM_BYTES_MAX
+  /* Maximum number of bytes to look at inside a file. Default is 7,340,032. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_BYTES_MAX", INT2FIX(MAGIC_PARAM_BYTES_MAX));
+#endif
+#ifdef MAGIC_PARAM_ENCODING_MAX
+  /* Maximum number of bytes to scan for encoding. Default is 65,536. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_ENCODING_MAX", INT2FIX(MAGIC_PARAM_ENCODING_MAX));
+#endif
+#ifdef MAGIC_PARAM_ELF_SHSIZE_MAX
+  /* Maximum ELF section size to process. Default is 134,217,728. */
+  rb_define_const(cFileMagic, "MAGIC_PARAM_ELF_SHSIZE_MAX", INT2FIX(MAGIC_PARAM_ELF_SHSIZE_MAX));
+#endif
+  /*======= END CONSTANTS =======*/
 }
