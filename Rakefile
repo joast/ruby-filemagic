@@ -14,7 +14,7 @@ begin
     gem: {
       name:        %q{ruby-filemagic},
       version:     FileMagic::VERSION,
-      summary:     'Ruby bindings to the magic(4) library',
+      summary:     'Ruby bindings to libmagic(3)',
       authors:     ['Travis Whitton', 'Jens Wille'],
       email:       'jens.wille@gmail.com',
       license:     %q{Ruby},
@@ -34,7 +34,6 @@ rescue LoadError => err
 end
 
 namespace :docker do
-
   name = "ruby-filemagic-gem-native:#{FileMagic::VERSION}"
 
   task :build do
@@ -47,5 +46,4 @@ namespace :docker do
 
   desc "Build native gems using docker image #{name}"
   task 'gem:native' => %w[build run]
-
 end
