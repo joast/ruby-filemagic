@@ -26,7 +26,7 @@ begin
           File.join(dir, 'src'), File.join(src, '.libs')] }
       },
 
-      required_ruby_version: '>= 1.9.3'
+      required_ruby_version: '>= 3.0.0'
     }
   }}
 rescue LoadError => err

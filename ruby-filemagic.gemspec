@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.licenses = ["Ruby".freeze]
   s.post_install_message = "\nruby-filemagic-0.7.3 [2022-01-07]:\n\n* Dockerfile to build native extension (pull request #26 by Pavel Lobashov).\n* Include paths for ARM-based Apple Macs (Apple Silicon) (pull request #35 by\n  @545ch4).\n\n".freeze
   s.rdoc_options = ["--title".freeze, "ruby-filemagic Application documentation (v0.7.3)".freeze, "--charset".freeze, "UTF-8".freeze, "--line-numbers".freeze, "--all".freeze, "--main".freeze, "README".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 1.9.3".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
   s.rubygems_version = "3.2.5".freeze
   s.summary = "Ruby bindings to the magic(4) library".freeze
 
