@@ -1,5 +1,11 @@
 # FileMagic
 
+## DESCRIPTION
+
+FileMagic is an extension that allows you to use **libmagic**(3) from ruby.
+
+DO NOT USE!!! This is in the process of being improved.
+
 ## VERSION
 
 This documentation refers to FileMagic version 0.9.0 and **libmagic**(3)
@@ -7,15 +13,10 @@ from **file**(1) version 5.45. If FileMagic is built against an earlier
 version of **libmagic**(3), then some constants and methods described in this
 document might not be available.
 
-## DESCRIPTION
+## Constants
 
-FileMagic is an extension that allows you to use **libmagic**(3) from ruby.
+### Flags
 
-DO NOT USE!!! This is in the process of being improved.
-
-### Constants
-
-#### Flags
 | Flag | Description |
 | --- | --- |
 | `MAGIC_NONE` | No special handling. |
@@ -53,8 +54,8 @@ DO NOT USE!!! This is in the process of being improved.
 | `MAGIC_NO_CHECK_FORTRAN` | Don't check ascii/fortran. Defined for backwards compatibility; does nothing. |
 | `MAGIC_NO_CHECK_TROFF` | Don't check ascii/troff. Defined for backwards compatibility; does nothing. |
 
+### Parameters
 
-#### Parameters
 | Parameter | Description |
 | --- | --- |
 | `MAGIC_PARAM_INDIR_MAX` | How many levels of recursion will be followed for indirect magic entries. Default is 50. |
@@ -68,23 +69,28 @@ DO NOT USE!!! This is in the process of being improved.
 | `MAGIC_PARAM_ELF_SHSIZE_MAX` | Maximum ELF section size to process. Default is 134,217,728. |
 
 
-### Methods
+## Methods
 
 `file(filename)`
-:   Returns a textual description of the contents of the filename argument
+: Returns a textual description of the contents of the filename argument
+
 `buffer(string)`
-:   Returns a textual description of the contents of the string argument
+: Returns a textual description of the contents of the string argument
+
 `check(filename)`
-:   Checks the validity of entries in the database file passed in as filename
+: Checks the validity of entries in the database file passed in as filename
+
 `compile(filename)`
-:   Compiles the database file passed in as filename
+: Compiles the database file passed in as filename
+
 `load(filename)`
-:   Loads the database file passed in as filename
+: Loads the database file passed in as filename
+
 `close()`
-:   Closes the magic database and frees any memory allocated
+: Closes the magic database and frees any allocated memory
 
 
-### Synopsis
+## Synopsis
 
 ```ruby
 require 'filemagic'
@@ -119,18 +125,18 @@ p mime.flags
 # => [:mime_type, :mime_encoding]
 ```
 
-### Environment
+## Environment
 
 The environment variable `MAGIC` can be used to set the default magic file
-name. See file(1) man page for more information.
+name. See **file**(1) man page for more information.
 
-### Installation
+## Installation
 
 Install the gem:
 
     sudo gem install ruby-filemagic
 
-The file(1) library and headers are required. Commands/packages for some
+The **file**(1) library and headers are required. Commands/packages for some
 operating systems are:
 
 | System | Package |
@@ -142,7 +148,7 @@ operating systems are:
 | OS X | `brew install libmagic` |
 
 
-### Build native extension
+## Build native extension
 
     rake docker:gem:native
 
@@ -150,12 +156,12 @@ Requires [Docker](https://docker.com) to be installed.
 
 ## SEE ALSO
 
-libmagic(3), file(1), magic(5)
+**libmagic**(3), **file**(1), **magic**(5)
 
 ## LINKS
 
 * [file(1) homepage](https://www.darwinsys.com/file/)
-* [Documentation](https://blackwinter.github.io/ruby-filemagic)
+* [Documentation](https://joast.github.io/ruby-filemagic)
 * [Source code](https://github.com/joast/ruby-filemagic)
 * [RubyGem](https://rubygems.org/gems/ruby-filemagic)
 * [Travis CI](https://travis-ci.org/blackwinter/ruby-filemagic)

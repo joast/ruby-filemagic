@@ -12,30 +12,30 @@
 
 * Don't use default include and library directories with dir_config
 
-	Using default directories in publicly available gems can cause
-	problems because the directories are used when building unless all
-	of them are overridden. For this gem it means running "gem
-	install" with "--with-magic-dir=..." and "--with-gnurx-dir=..."
-	(yes, even if gnurx isn't installed on the system). Kind of
-	annoying to have to look at a gem's extconf.rb to see what
-	dir_config calls are being made and what needs to be overridden
-	because of defaults that conflict with how ruby was
-	configured/installed.
+        Using default directories in publicly available gems can cause
+        problems because the directories are used when building unless all
+        of them are overridden. For this gem it means running "gem
+        install" with "--with-magic-dir=..." and "--with-gnurx-dir=..."
+        (yes, even if gnurx isn't installed on the system). Kind of
+        annoying to have to look at a gem's extconf.rb to see what
+        dir_config calls are being made and what needs to be overridden
+        because of defaults that conflict with how ruby was
+        configured/installed.
 
-	The above discovery was prompted by having libmagic installed in
-	both the system default location and a non-standard location (that
-	ruby uses for a bunch of other third-party libraries). The
-	following warning was issued when trying to use the gem unless the
-	gem was installed with both '--with-magic-dir=..." and
-	"-with-gnurx-dir=...":
+        The above discovery was prompted by having libmagic installed in
+        both the system default location and a non-standard location (that
+        ruby uses for a bunch of other third-party libraries). The
+        following warning was issued when trying to use the gem unless the
+        gem was installed with both '--with-magic-dir=..." and
+        "-with-gnurx-dir=...":
 
-	FileMagic v0.7.3: compiled magic version [5.40] does not match
-	with shared library magic version [5.43]
+        FileMagic v0.7.3: compiled magic version [5.40] does not match
+        with shared library magic version [5.43]
 
-	Note: Checked out MANY gems and very few of then included paths
-	for include and library directories. In other words, most gems
-	expect who is ever installing the gem to specify directories for
-	things that are in non-standard locations.
+        Note: Checked out MANY gems and very few of then included paths
+        for include and library directories. In other words, most gems
+        expect who is ever installing the gem to specify directories for
+        things that are in non-standard locations.
 
 * Use assert_raises instead of assert_raise
 
@@ -45,29 +45,29 @@
 
 * Default to using test-unit gem even if minitest_tu_shim is installed
 
-	Force test-unit gem to be used unless "USE_TEST_UNIT=no" is set in
-	the environment. If "USE_TEST_UNIT=no" is set in the environment
-	and minitest_tu_shim is installed, then minitest will be used
-	instead of test-unit. If minitest_tu_shim isn't installed, then
-	the environment variable doesn't matter and test-unit will be
-	used.
+        Force test-unit gem to be used unless "USE_TEST_UNIT=no" is set in
+        the environment. If "USE_TEST_UNIT=no" is set in the environment
+        and minitest_tu_shim is installed, then minitest will be used
+        instead of test-unit. If minitest_tu_shim isn't installed, then
+        the environment variable doesn't matter and test-unit will be
+        used.
 
 * Fixed "note:" output from some compilers when compiling filemagic.c
 
-	Increased version string temporary buffers from 8 to 16 bytes to
-	suppress the following note, and 17 or 18 other lines of output,
-	when compiling filemagic.c:
+        Increased version string temporary buffers from 8 to 16 bytes to
+        suppress the following note, and 17 or 18 other lines of output,
+        when compiling filemagic.c:
 
-	note: ‘sprintf’ output between 5 and 14 bytes into a destination of size 8
+        note: ‘sprintf’ output between 5 and 14 bytes into a destination of size 8
 
 * Create test/pylink if system supports symbolic links.
 
-	Don't package test/pylink (a symbolic link to test/pyfile). Gem
-	packaging creates a dangling symbolic link if the symbolic link is
-	packaged.  Also, symbolic links might not even be supported on the
-	installation system.  Create the link if it is needed when tests
-	are run. If the system doesn't support symbolic links, then the
-	link won't be created and the symbolic link tests will be skipped.
+        Don't package test/pylink (a symbolic link to test/pyfile). Gem
+        packaging creates a dangling symbolic link if the symbolic link is
+        packaged.  Also, symbolic links might not even be supported on the
+        installation system.  Create the link if it is needed when tests
+        are run. If the system doesn't support symbolic links, then the
+        link won't be created and the symbolic link tests will be skipped.
 
 * Converted README and ChangeLog to markdown.
 
