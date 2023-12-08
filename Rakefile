@@ -15,10 +15,10 @@ begin
       name:        %q{ruby-filemagic},
       version:     FileMagic::VERSION,
       summary:     'Ruby bindings to libmagic(3)',
-      authors:     ['Travis Whitton', 'Jens Wille'],
-      email:       'jens.wille@gmail.com',
+      authors:     ['Travis Whitton', 'Jens Wille', 'Rick Ohnemus'],
+      email:       'rick_ohnemus@acm.org',
       license:     %q{Ruby},
-      homepage:    :blackwinter,
+      homepage:    :joast,
       local_files: [mgc],
       extension:   {
         with_cross_gnurx: lambda { |dir| [dir] },
@@ -26,7 +26,12 @@ begin
           File.join(dir, 'src'), File.join(src, '.libs')] }
       },
 
-      required_ruby_version: '>= 1.9.3'
+      required_ruby_version: '>= 3.0.0'
+    },
+    rdoc: {
+      rdoc_files: %w[README.md CHANGELOG.md CODE_OF_CONDUCT.md lib/**/*.rb ext/**/*.c],
+      title:      '{name:%s } documentation{version: (v%s)}',
+      main:       'README.md'
     }
   }}
 rescue LoadError => err

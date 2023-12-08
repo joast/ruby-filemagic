@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # frozen_string_literal: true
-# stub: ruby-filemagic 0.8.0 ruby lib
+# stub: ruby-filemagic 0.9.0 ruby lib
 # stub: ext/filemagic/extconf.rb
 
 require_relative 'lib/filemagic/version'
@@ -32,8 +32,7 @@ Gem::Specification.new do |s|
     '--charset=UTF-8',
     '--line-numbers',
     '--all',
-    '--main=README.md',
-    '--verbose'
+    '--main=README.md'
   ])
 
   s.files = [

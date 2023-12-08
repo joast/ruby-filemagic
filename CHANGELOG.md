@@ -1,6 +1,8 @@
 # Revision history for ruby-filemagic
 
-## 0.8.0 [2023-11-??]
+## 0.9.0 [unreleased]
+
+## 0.8.0 [unreleased]
 
 * Remove Warning 'warning: undefining the allocator of T_DATA class FileMagic'
 

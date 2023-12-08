@@ -1,19 +1,21 @@
-# FileMagic Library Binding
+# FileMagic
 
 ## VERSION
 
-This documentation refers to FileMagic version 0.8.0 and libmagic(3) from
-file(1) version 5.45. If FileMagic is built against an earlier version of
-libmagic(3), then some constants and methods described in this document
-might not be available.
+This documentation refers to FileMagic version 0.9.0 and **libmagic**(3)
+from **file**(1) version 5.45. If FileMagic is built against an earlier
+version of **libmagic**(3), then some constants and methods described in this
+document might not be available.
 
 ## DESCRIPTION
 
-FileMagic extension module. See also libmagic(3), file(1), and magic(5).
+FileMagic is an extension that allows you to use **libmagic**(3) from ruby.
+
 DO NOT USE!!! This is in the process of being improved.
 
 ### Constants
 
+#### Flags
 | Flag | Description |
 | --- | --- |
 | `MAGIC_NONE` | No special handling. |
@@ -51,6 +53,8 @@ DO NOT USE!!! This is in the process of being improved.
 | `MAGIC_NO_CHECK_FORTRAN` | Don't check ascii/fortran. Defined for backwards compatibility; does nothing. |
 | `MAGIC_NO_CHECK_TROFF` | Don't check ascii/troff. Defined for backwards compatibility; does nothing. |
 
+
+#### Parameters
 | Parameter | Description |
 | --- | --- |
 | `MAGIC_PARAM_INDIR_MAX` | How many levels of recursion will be followed for indirect magic entries. Default is 50. |
@@ -83,42 +87,42 @@ DO NOT USE!!! This is in the process of being improved.
 ### Synopsis
 
 ```ruby
-    require 'filemagic'
+require 'filemagic'
 
-    p FileMagic::VERSION
-    # => "0.8.0"
-    p FileMagic::MAGIC_VERSION
-    # => "5.45"
+p FileMagic::VERSION
+# => "0.9.0"
+p FileMagic::MAGIC_VERSION
+# => "5.45"
 
-    p FileMagic.new.flags
-    # => []
+p FileMagic.new.flags
+# => []
 
-    FileMagic.open(:mime) { |fm|
-      p fm.flags
-      # => [:mime_type, :mime_encoding]
-      p fm.file(__FILE__)
-      # => "text/plain; charset=us-ascii"
-      p fm.file(__FILE__, true)
-      # => "text/plain"
+FileMagic.open(:mime) { |fm|
+  p fm.flags
+  # => [:mime_type, :mime_encoding]
+  p fm.file(__FILE__)
+  # => "text/plain; charset=us-ascii"
+  p fm.file(__FILE__, true)
+  # => "text/plain"
 
-      fm.flags = [:raw, :continue]
-      p fm.flags
-      # => [:continue, :raw]
-    }
+  fm.flags = [:raw, :continue]
+  p fm.flags
+  # => [:continue, :raw]
+}
 
-    fm = FileMagic.new
-    p fm.flags
-    # => []
+fm = FileMagic.new
+p fm.flags
+# => []
 
-    mime = FileMagic.mime
-    p mime.flags
-    # => [:mime_type, :mime_encoding]
+mime = FileMagic.mime
+p mime.flags
+# => [:mime_type, :mime_encoding]
 ```
 
 ### Environment
 
 The environment variable `MAGIC` can be used to set the default magic file
-name.
+name. See file(1) man page for more information.
 
 ### Installation
 
@@ -126,18 +130,16 @@ Install the gem:
 
     sudo gem install ruby-filemagic
 
-The file(1) library and headers are required:
+The file(1) library and headers are required. Commands/packages for some
+operating systems are:
 
-Debian/Ubuntu
-:   `libmagic-dev`
-Fedora/SuSE
-:   `file-devel`
-Alpine
-:   `libmagic file file-dev`
-Gentoo
-:   `sys-libs/libmagic`
-OS X
-:   `brew install libmagic`
+| System | Package |
+| --- | --- |
+| Alpine | `libmagic file file-dev` |
+| Debian/Ubuntu | `apt install libmagic-dev` |
+| Fedora/SuSE | `dnf install file-devel` |
+| Gentoo | `sys-libs/libmagic` |
+| OS X | `brew install libmagic` |
 
 
 ### Build native extension
@@ -145,6 +147,10 @@ OS X
     rake docker:gem:native
 
 Requires [Docker](https://docker.com) to be installed.
+
+## SEE ALSO
+
+libmagic(3), file(1), magic(5)
 
 ## LINKS
 
