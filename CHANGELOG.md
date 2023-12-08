@@ -33,6 +33,12 @@
 	expect who is ever installing the gem to specify directories for
 	things that are in non-standard locations.
 
+* Use assert_raises instead of assert_raise
+
+        If minitest_tu_shim is installed, then minitest will be used instead
+        of test-unit resulting in deprecation warnings for assert_raise.
+        Use assert_raises because it works with both test-unit and minitest.
+
 * Default to using test-unit gem even if minitest_tu_shim is installed
 
 	Force test-unit gem to be used unless "USE_TEST_UNIT=no" is set in
