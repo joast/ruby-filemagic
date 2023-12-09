@@ -1,8 +1,7 @@
 require 'filemagic'
 
 module FileMagic::Ext
-
-  def self.included(base)
+  def self.included(base) # :nodoc:
     base.class_eval {
       extend ClassMethods
       include InstanceMethods
@@ -10,7 +9,6 @@ module FileMagic::Ext
   end
 
   module ClassMethods
-
     def file_type(file, *flags)
       raise NotImplementedError, 'must be implemented by including class'
     end
@@ -28,11 +26,9 @@ module FileMagic::Ext
     def content_type(file, *flags)
       mime_type(file, *flags << { simplified: true })
     end
-
   end
 
   module InstanceMethods
-
     def file_type(*flags)
       self.class.file_type(self, *flags)
     end
@@ -48,31 +44,39 @@ module FileMagic::Ext
     def content_type(*flags)
       self.class.content_type(self, *flags)
     end
-
   end
-
 end
 
-class File
-
+class File # :nodoc:
   include FileMagic::Ext
+
+  # :doc:
+
+  ##
+  # Get magic information for a file.
 
   def self.file_type(file, *flags)
     FileMagic.fm(*flags).file(file.respond_to?(:path) ? file.path : file)
   rescue FileMagic::FileMagicError
   end
 
+  # :enddoc:
 end
 
-class String
-
+class String # :nodoc:
   include FileMagic::Ext
+
+  # :doc:
+
+  ##
+  # Get magic information for a string.
 
   def self.file_type(string, *flags)
     FileMagic.fm(*flags).buffer(string)
   rescue FileMagic::FileMagicError
   end
 
+  # :enddoc:
 end
 
 if $0 == __FILE__
