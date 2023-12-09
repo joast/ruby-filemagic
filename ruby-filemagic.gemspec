@@ -54,7 +54,7 @@ Gem::Specification.new do |s|
     'test/leaktest.rb',
     'test/mahoro.c',
     'test/perl',
-    'test/perl.mgc',
+    'test/old-perl.mgc',
     'test/pyfile',
     'test/pyfile-compressed.gz'
   ]

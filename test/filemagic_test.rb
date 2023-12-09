@@ -15,6 +15,20 @@ magic file from #{FileMagic.path}
 
   EOT
 
+  # remove perl.mgc if it exists
+  def self.rm_perl_mgc
+    pmp = File.join(File.dirname(__FILE__), 'perl.mgc')
+    File.unlink(pmp) if File.exist?(pmp)
+  end
+
+  def self.startup
+    rm_perl_mgc
+  end
+
+  def self.shutdown
+    rm_perl_mgc
+  end
+
   def test_file
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
 
@@ -150,24 +164,33 @@ magic file from #{FileMagic.path}
     assert(res)
   end
 
-  def test_check_compiled
+  def test_compile
+    assert(File.writable?('test'), "can't write to test directory")
+
+    Dir.chdir(File.dirname(__FILE__)) do
+      fm = FileMagic.new(FileMagic::MAGIC_NONE)
+      res = fm.compile(path_to('perl'))
+      fm.close
+      assert(res)
+    end
+  end
+
+  def test_compile_check
+    fm = FileMagic.new(FileMagic::MAGIC_NONE)
+    res = fm.check(path_to('perl.mgc'))
+    fm.close
+    assert(res)
+  end
+
+  def test_check_old_magic
     return if MAGIC_VERSION <= 509
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
-    res = silence_stderr { fm.check(path_to('perl.mgc')) }
+    res = silence_stderr { fm.check(path_to('old-perl.mgc')) }
     fm.close
     assert(match_version(
       0   => res,
       539 => !res
     ))
-  end
-
-  def test_compile
-    assert(File.writable?('.'), "can't write to current directory")
-    fm = FileMagic.new(FileMagic::MAGIC_NONE)
-    res = fm.compile(path_to('perl'))
-    fm.close
-    assert(res)
-    File.unlink(path_to('perl.mgc', '.'))
   end
 
   def test_block
@@ -249,7 +272,7 @@ magic file from #{FileMagic.path}
 
   def test_mahoro_valid
     fm = FileMagic.new
-    assert(silence_stderr { fm.valid? }, 'Default database was not valid.')
+    assert(fm.valid?, 'Default database was not valid.')
   end
 
   # test abbreviating mime types
@@ -312,10 +335,11 @@ magic file from #{FileMagic.path}
   end
 
   def silence_stderr
-    require 'nuggets/io/redirect'
-    $stderr.redirect { yield }
-  rescue LoadError
+    previous_stderr = $stderr.dup
+    $stderr.reopen(::File::NULL, mode: 'w')
     yield
+  ensure
+    $stderr.reopen(previous_stderr)
   end
 
   def match_version(versions)
