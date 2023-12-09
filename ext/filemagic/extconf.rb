@@ -8,9 +8,9 @@ dir_config('gnurx')
 
 if have_library('magic', 'magic_open')
   if have_header('magic.h')
-    have_library('gnurx')
-    have_func('magic_version')
     have_header('file/patchlevel.h')
+    have_func('magic_version')
+    have_library('gnurx')
     create_makefile('filemagic/ruby_filemagic')
   else
     abort '*** ERROR: missing magic.h (required to compile this module)'

@@ -2,6 +2,13 @@
 
 ## 0.9.0 [unreleased]
 
+* Converted README and ChangeLog to markdown.
+
+* More documentation.
+
+* Housekeeping.
+
+
 ## 0.8.0 [unreleased]
 
 * Remove Warning 'warning: undefining the allocator of T_DATA class FileMagic'
@@ -68,8 +75,6 @@
         installation system.  Create the link if it is needed when tests
         are run. If the system doesn't support symbolic links, then the
         link won't be created and the symbolic link tests will be skipped.
-
-* Converted README and ChangeLog to markdown.
 
 * Housekeeping.
 

@@ -1,79 +1,57 @@
-begin
-  require "filemagic/#{RUBY_VERSION[/\d+.\d+/]}/ruby_filemagic"
-rescue LoadError => err
-  raise if err.respond_to?(:path) && !err.path
-  require 'filemagic/ruby_filemagic'
-end
+# frozen_string_literal: true
 
-require 'filemagic/version'
+require_relative "filemagic/ruby_filemagic.#{RbConfig::CONFIG['DLEXT']}"
+require_relative 'filemagic/version'
 
 class FileMagic
-
-  unless ENV['MAGIC_SILENCE_VERSION_CHECK'] || MAGIC_VERSION == library_version
-    warn "#{self} v#{VERSION}: compiled magic version [#{MAGIC_VERSION}] " <<
+  unless ENV['MAGIC_SILENCE_VERSION_CHECK'] || library_version == MAGIC_VERSION
+    warn "#{self} v#{VERSION}: compiled magic version [#{MAGIC_VERSION}] " \
          "does not match with shared library magic version [#{library_version}]"
   end
 
-  # Map flag names to their values (:name => Integer).
-  FLAGS_BY_SYM = [
-    :none,               # No flags
-    :debug,              # Turn on debugging
-    :symlink,            # Follow symlinks
-    :compress,           # Check inside compressed files
-    :devices,            # Look at the contents of devices
-    :mime_type,          # Return the MIME type
-    :continue,           # Return all matches
-    :check,              # Print warnings to stderr
-    :preserve_atime,     # Restore access time on exit
-    :raw,                # Don't convert unprintable chars
-    :error,              # Handle ENOENT etc as real errors
-    :mime_encoding,      # Return the MIME encoding
-    :mime,               # MAGIC_MIME_TYPE | MAGIC_MIME_ENCODING
-    :apple,              # Return the Apple creator/type
-    :extension,          # Return a /-separated list of extensions
-    :compress_transp,    # Check inside compressed files but not report compression
-    :nodesc,             # MAGIC_EXTENSION | MAGIC_MIME | MAGIC_APPLE
-    :no_check_compress,  # Don't check for compressed files
-    :no_check_tar,       # Don't check for tar files
-    :no_check_soft,      # Don't check magic entries
-    :no_check_apptype,   # Don't check application type
-    :no_check_elf,       # Don't check for elf details
-    :no_check_text,      # Don't check for text files
-    :no_check_cdf,       # Don't check for cdf files
-    :no_check_tokens,    # Don't check tokens
-    :no_check_encoding,  # Don't check text encodings
-    :no_check_builtin,   # No built-in tests; only consult the magic file
+  # :stopdoc:
 
-    # Defined for backwards compatibility (renamed)
-    :no_check_ascii,     # MAGIC_NO_CHECK_TEXT
+  # Map flag symbols to their values
+  FLAGS_BY_SYM = constants.each_with_object({}) do |flag, flags|
+    fs = flag.to_s
+    next unless fs.match?(/^MAGIC_(?!PARAM_|VERSION)/)
 
-    # Defined for backwards compatibility; do nothing
-    :no_check_fortran,   # Don't check ascii/fortran
-    :no_check_troff      # Don't check ascii/troff
-  ].inject({}) { |flags, flag|
-    const = "MAGIC_#{flag.to_s.upcase}"
-    flags.update(flag => const_defined?(const) && const_get(const))
-  }
+    flags[fs[6..].downcase.to_sym] = const_get(flag)
+  end
 
-  # Map flag values to their names (Integer => :name).
+  # Map flag values to their names (Integer => :name). A few old flags have a
+  # value of 0 because they are only defined for backward compatibility. This
+  # map is useless for those because 0 is forced to be :none.
   FLAGS_BY_INT = FLAGS_BY_SYM.invert.update(0 => :none)
+
+  PARAMETERS_BY_SYM = constants.each_with_object({}) do |param, params|
+    ps = param.to_s
+    next unless ps.start_with?('MAGIC_PARAM_')
+
+    params[ps[6..].downcase.to_sym] = const_get(param)
+  end
+
+  PARAMETERS_BY_INT = PARAMETERS_BY_SYM.invert
 
   # Extract "simple" MIME type.
   SIMPLE_RE = %r{([.\w\/-]+)}
 
+  # :startdoc:
+
   @fm = {}
 
   class << self
-
     # Provide a "magic singleton".
     def fm(*flags)
       options = flags.last.is_a?(Hash) ? flags.pop : {}
+      key = [flags = flags(flags), options]
+      fm = @fm[key]
 
-      if fm = @fm[key = [flags = flags(flags), options]]
-        return fm unless fm.closed?
+      if fm && !fm.closed?
+        fm
+      else
+        @fm[key] = new(flags, options)
       end
-
-      @fm[key] = new(flags, options)
     end
 
     # Clear our instance cache.
@@ -99,15 +77,18 @@ class FileMagic
 
     # Just a short-cut to #open with the +mime+ flag set.
     def mime(*flags, &block)
-      open(:mime, *flags, &block)
+      self.open(:mime, *flags, &block)
     end
 
     def magic_version(default = MAGIC_VERSION)
-      default != '0' ? default :
-        user_magic_version ||
-        auto_magic_version ||
-        [default, 'unknown']
+      if default == '0'
+        user_magic_version || auto_magic_version || [default, 'unknown']
+      else
+        [default, 'default']
+      end
     end
+
+    # :stopdoc:
 
     private
 
@@ -115,27 +96,31 @@ class FileMagic
       [ENV[key], 'user-specified'] if ENV[key]
     end
 
+    # This is dangerous...
     def auto_magic_version
-      require 'nuggets/file/which'
-
-      if cmd = File.which_command([
-        'dpkg-query -f \'${Version}\' -W libmagic-dev',
-        'file -v'
-      ])
-        [%x{#{cmd}}[/\d+\.\d+/], 'auto-detected']
-      end
-    rescue LoadError
+      [`file -v`[/\d+\.\d+/], 'auto-detected']
+    rescue Errno::ENOENT
+      nil
     end
 
+    # :startdoc:
   end
 
+  # Set to true for "simple" file information (i.e. the downcased first word
+  # of what would normally be returned). For example: "ascii" instead of
+  # "ASCII text" or "ruby" instead of "Ruby script, ASCII text".
   attr_writer :simplified
 
+  # Simple output if true, otherwise normal output for current flags.
   def simplified?
     @simplified
   end
 
-  def io(io, length = 8, rewind = false)
+  # Return a string describing the data at the current position of an IO
+  # object. If rewind is false, then the The position in the IO object will
+  # be changed by this method. If rewind is true, then the position will be
+  # restored before returning.
+  def io(io, length = 1024, rewind = false)
     pos = io.pos if rewind
     buffer(io.read(length))
   ensure
@@ -146,8 +131,11 @@ class FileMagic
     descriptor(fd.respond_to?(:fileno) ? fd.fileno : fd)
   end
 
+  # call-seq:
+  #   inspect => string
+  #
+  # Returns a string containing a readable representation of +self+.
   def inspect
     super.insert(-2, closed? ? ' (closed)' : '')
   end
-
 end

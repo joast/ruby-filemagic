@@ -1,6 +1,11 @@
 #include "filemagic.h"
 
-/* Returns the magic version */
+/*
+ * call-seq:
+ *    library_version() -> string
+ *
+ * Returns the version of libmagic(3) that was loaded.
+ */
 static VALUE
 rb_magic_version(VALUE klass) {
   char version[16] = "0";
@@ -10,11 +15,16 @@ rb_magic_version(VALUE klass) {
   return rb_str_new2(version);
 }
 
-/* Returns the magic path */
+/*
+ * call-seq:
+ *    path() -> string
+ *
+ * Returns the path to the magic database.
+ */
 static VALUE
 rb_magic_getpath(VALUE klass) {
   const char *path = magic_getpath(NULL, 0);
-  return path != NULL ? rb_str_new2(path) : Qnil;
+  return path ? rb_str_new2(path) : Qnil;
 }
 
 /* Converts flags to integer */
@@ -59,7 +69,10 @@ rb_magic_flags(VALUE klass, VALUE flags) {
   return INT2FIX(i);
 }
 
-/* FileMagic.new */
+/*
+ * call-seq:
+ *   FileMagic.new(*flags) -> new_FileMagic
+ */
 static VALUE
 rb_magic_new(int argc, VALUE *argv, VALUE klass) {
   VALUE obj, args[2];
@@ -132,7 +145,7 @@ rb_magic_init(int argc, VALUE *argv, VALUE self) {
   return Qnil;
 }
 
-/* Frees resources allocated */
+/* Frees allocated resources. */
 static VALUE
 rb_magic_close(VALUE self) {
   magic_t ms;
@@ -157,13 +170,34 @@ rb_magic_closed_p(VALUE self) {
   return rb_attr_get(self, rb_intern("closed"));
 }
 
-/* Return a string describing the named file */
+/*
+ * Document-method: file
+ *
+ * call-seq:
+ *    file(file_name_or_path, simplified = nil) -> string
+ *
+ * Return a string describing the named file.
+ */
 RB_MAGIC_TYPE(file, FILE)
 
-/* Return a string describing the string buffer */
+/*
+ * Document-method: buffer
+ *
+ * call-seq:
+ *    buffer(string, simplified = nil) -> string
+ *
+ * Return a string describing the string buffer.
+ */
 RB_MAGIC_TYPE(buffer, BUFFER)
 
-/* Return a string describing the file descriptor */
+/*
+ * Document-method: descriptor
+ *
+ * call-seq:
+ *    descriptor(file_descriptor, simplified = nil) -> string
+ *
+ * Return a string describing the file descriptor.
+ */
 RB_MAGIC_TYPE(descriptor, DESCRIPTOR)
 
 /* Get the flags as array of symbols */
@@ -218,10 +252,11 @@ Init_ruby_filemagic() {
   RB_MAGIC_SET_VERSION(MAGIC_VERSION / 100, MAGIC_VERSION % 100)
 #endif
 
-  /* Version of libmagic(3) this version of ruby-filemagic was built with. */
+  /* Version of libmagic(3) this version of FileMagic was built with. */
   rb_define_const(cFileMagic, "MAGIC_VERSION", rb_str_new2(version));
 
   rb_define_singleton_method(cFileMagic, "library_version", rb_magic_version,  0);
+
   rb_define_singleton_method(cFileMagic, "path",            rb_magic_getpath,  0);
   rb_define_singleton_method(cFileMagic, "flags",           rb_magic_flags,    1);
   rb_define_singleton_method(cFileMagic, "new",             rb_magic_new,     -1);
@@ -370,7 +405,7 @@ Init_ruby_filemagic() {
   rb_define_const(cFileMagic, "MAGIC_NO_CHECK_BUILTIN", INT2FIX(MAGIC_NO_CHECK_BUILTIN));
 #endif
 #ifdef MAGIC_NO_CHECK_ASCII
-  /* Defined for backwards compatibility. Renamed from MAGIC_NO_CHECK_TEXT. */
+  /* Defined for backwards compatibility. Renamed to `MAGIC_NO_CHECK_TEXT`. */
   rb_define_const(cFileMagic, "MAGIC_NO_CHECK_ASCII", INT2FIX(MAGIC_NO_CHECK_ASCII));
 #endif
 #ifdef MAGIC_NO_CHECK_FORTRAN
