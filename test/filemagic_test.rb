@@ -4,13 +4,13 @@ require 'test/unit'
 require 'filemagic'
 
 class TestFileMagic < Test::Unit::TestCase
-
   magic_version, origin = FileMagic.magic_version
-  MAGIC_VERSION = magic_version.to_f
+  MAGIC_VERSION = magic_version.delete('.').to_i
 
   warn <<-EOT
 
-libmagic version: #{MAGIC_VERSION}#{" (#{origin})" if origin}
+magic version: #{magic_version}#{" (#{origin})" if origin}
+library version: #{FileMagic.library_version}
 magic file from #{FileMagic.path}
 
   EOT
@@ -19,8 +19,8 @@ magic file from #{FileMagic.path}
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
 
     python_script = match_version(
-      0    => 'a python script, ASCII text executable',
-      5.11 => 'Python script, ASCII text executable'
+      0   => 'a python script, ASCII text executable',
+      511 => 'Python script, ASCII text executable'
     )
 
     res = fm.file(path_to('pyfile'))
@@ -35,8 +35,8 @@ magic file from #{FileMagic.path}
       if File.symlink?(path_to('pylink'))
         res = fm.file(path_to('pylink'))
         assert_equal(match_version(
-          0    => "symbolic link to `pyfile'",
-          5.22 => 'symbolic link to pyfile'
+          0   => "symbolic link to `pyfile'",
+          522 => 'symbolic link to pyfile'
         ), res.strip)
       end
 
@@ -58,6 +58,7 @@ magic file from #{FileMagic.path}
     end
 
     fm.close
+
     fm = FileMagic.new(FileMagic::MAGIC_COMPRESS)
 
     res = fm.file(path_to('pyfile-compressed.gz'))
@@ -85,8 +86,8 @@ magic file from #{FileMagic.path}
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
 
     python_script = match_version(
-      0    => 'a python script, ASCII text executable',
-      5.11 => 'Python script, ASCII text executable'
+      0   => 'a python script, ASCII text executable',
+      511 => 'Python script, ASCII text executable'
     )
 
     fd_for('pyfile') { |fd|
@@ -150,13 +151,13 @@ magic file from #{FileMagic.path}
   end
 
   def test_check_compiled
-    return if MAGIC_VERSION <= 5.09
+    return if MAGIC_VERSION <= 509
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
     res = silence_stderr { fm.check(path_to('perl.mgc')) }
     fm.close
     assert(match_version(
-      0    => res,
-      5.39 => !res
+      0   => res,
+      539 => !res
     ))
   end
 
@@ -176,8 +177,8 @@ magic file from #{FileMagic.path}
       fm.file(path_to('pyfile'))
     }
     assert_equal(match_version(
-      0    => 'a python script, ASCII text executable',
-      5.11 => 'Python script, ASCII text executable'
+      0   => 'a python script, ASCII text executable',
+      511 => 'Python script, ASCII text executable'
     ), res)
     assert block_fm.closed?
   end
@@ -220,8 +221,8 @@ magic file from #{FileMagic.path}
     fm = FileMagic.new
     fm.flags = FileMagic::MAGIC_NONE
     assert_equal(match_version(
-      0    => 'ASCII C program text',
-      5.11 => 'C source, ASCII text'
+      0   => 'ASCII C program text',
+      511 => 'C source, ASCII text'
     ), fm.file(path_to('mahoro.c')))
   end
 
@@ -235,8 +236,8 @@ magic file from #{FileMagic.path}
     fm = FileMagic.new
     fm.flags = FileMagic::MAGIC_NONE
     assert_equal(match_version(
-      0    => 'ASCII C program text',
-      5.11 => 'C source, ASCII text'
+      0   => 'ASCII C program text',
+      511 => 'C source, ASCII text'
     ), fm.buffer(File.read(path_to('mahoro.c'))))
   end
 
@@ -268,10 +269,10 @@ magic file from #{FileMagic.path}
     # assert_equal('text/plain', fm.file(path_to('perl')))
     assert_equal('text/x-file', fm.file(path_to('perl')))
     assert_equal(match_version(
-      0    => 'application/vnd.ms-office',
-      5.11 => 'application/msword',
-      5.14 => 'application/vnd.ms-office',
-      5.39 => 'application/vnd.ms-excel'
+      0   => 'application/vnd.ms-office',
+      511 => 'application/msword',
+      514 => 'application/vnd.ms-office',
+      539 => 'application/vnd.ms-excel'
     ), fm.file(path_to('excel-example.xls')))
   end
 
@@ -320,5 +321,4 @@ magic file from #{FileMagic.path}
   def match_version(versions)
     versions.sort_by { |k,| -k }.find { |k,| k <= MAGIC_VERSION }.last
   end
-
 end
