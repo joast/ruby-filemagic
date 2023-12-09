@@ -47,7 +47,6 @@ Gem::Specification.new do |s|
     'ext/filemagic/filemagic.h',
     'lib/filemagic.rb',
     'lib/filemagic/ext.rb',
-    'lib/filemagic/magic.mgc',
     'lib/filemagic/version.rb',
     'lib/ruby-filemagic.rb',
     'test/excel-example.xls',

@@ -14,10 +14,6 @@ class FileMagic
          "does not match with shared library magic version [#{library_version}]"
   end
 
-  DEFAULT_MAGIC = __FILE__.sub(/\.rb\z/, '/magic.mgc')
-
-  ENV['MAGIC'] ||= DEFAULT_MAGIC unless path
-
   # Map flag names to their values (:name => Integer).
   FLAGS_BY_SYM = [
     :none,               # No flags

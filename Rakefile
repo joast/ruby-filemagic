@@ -3,13 +3,6 @@ require_relative 'lib/filemagic/version'
 begin
   require 'hen'
 
-  file mgc = 'lib/filemagic/magic.mgc' do
-    dir = ENV['WITH_CROSS_MAGIC']
-
-    dir && File.exist?(src = File.join(dir, 'magic', File.basename(mgc))) ?
-      cp(src, mgc) : File.binwrite(mgc, "\x1C\x04\x1E\xF1\x0C".ljust(248, "\0"))
-  end
-
   Hen.lay! {{
     gem: {
       name:        %q{ruby-filemagic},
@@ -19,7 +12,6 @@ begin
       email:       'rick_ohnemus@acm.org',
       license:     %q{Ruby},
       homepage:    :joast,
-      local_files: [mgc],
       extension:   {
         with_cross_gnurx: lambda { |dir| [dir] },
         with_cross_magic: lambda { |dir| [src =

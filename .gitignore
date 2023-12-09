@@ -4,7 +4,6 @@
 Makefile
 doc
 doc.local
-magic.mgc
 mkmf.log
 pkg
 tmp
