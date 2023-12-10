@@ -52,7 +52,6 @@ Gem::Specification.new do |s|
     'test/excel-example.xls',
     'test/filemagic_test.rb',
     'test/leaktest.rb',
-    'test/mahoro.c',
     'test/perl',
     'test/old-perl.mgc',
     'test/pyfile',

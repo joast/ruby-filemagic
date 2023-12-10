@@ -238,41 +238,41 @@ magic file from #{FileMagic.path}
     assert fm.closed?
   end
 
-  # tests adapted from mahoro:
-
-  def test_mahoro_file
+  def test_c_file
     fm = FileMagic.new
     fm.flags = FileMagic::MAGIC_NONE
     assert_equal(match_version(
-      0   => 'ASCII C program text',
-      511 => 'C source, ASCII text'
-    ), fm.file(path_to('mahoro.c')))
+        0 => 'ASCII C program text',
+      511 => 'C source, ASCII text, with very long lines (331)'
+    ), fm.file(path_to('../ext/filemagic/filemagic.c')))
   end
 
-  def test_mahoro_mime_file
+  def test_c_mime_file
     fm = FileMagic.new
     fm.flags = FileMagic::MAGIC_MIME
-    assert_equal('text/x-c; charset=us-ascii', fm.file(path_to('mahoro.c')))
+    assert_equal('text/x-c; charset=us-ascii',
+                 fm.file(path_to('../ext/filemagic/filemagic.c')))
   end
 
-  def test_mahoro_buffer
+  def test_c_buffer
     fm = FileMagic.new
     fm.flags = FileMagic::MAGIC_NONE
     assert_equal(match_version(
-      0   => 'ASCII C program text',
-      511 => 'C source, ASCII text'
-    ), fm.buffer(File.read(path_to('mahoro.c'))))
+        0 => 'ASCII C program text',
+      511 => 'C source, ASCII text, with very long lines (331)'
+    ), fm.buffer(File.read(path_to('../ext/filemagic/filemagic.c'))))
   end
 
-  def test_mahoro_mime_buffer
+  def test_c_mime_buffer
     fm = FileMagic.new
     fm.flags = FileMagic::MAGIC_MIME
-    assert_equal('text/x-c; charset=us-ascii', fm.buffer(File.read(path_to('mahoro.c'))))
+    assert_equal('text/x-c; charset=us-ascii',
+                 fm.buffer(File.read(path_to('../ext/filemagic/filemagic.c'))))
   end
 
-  def test_mahoro_valid
+  def test_valid
     fm = FileMagic.new
-    assert(fm.valid?, 'Default database was not valid.')
+    assert_predicate(fm, :valid?, 'Default database was not valid.')
   end
 
   # test abbreviating mime types
