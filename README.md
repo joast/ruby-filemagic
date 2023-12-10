@@ -17,56 +17,56 @@ document might not be available.
 
 ### Flags
 
-| Flag | Description |
-| --- | --- |
-| `MAGIC_NONE` | No special handling. |
-| `MAGIC_DEBUG` | Print debugging messages to stderr. |
-| `MAGIC_SYMLINK` | If the file queried is a symlink, follow it. |
-| `MAGIC_COMPRESS` | If the file is compressed, unpack it and look at the contents. |
-| `MAGIC_DEVICES` | If the file is a block or character special device, then open the device and try to look in its contents. |
-| `MAGIC_MIME_TYPE` | Return a MIME type string, instead of a textual description. |
-| `MAGIC_CONTINUE` | Return all matches, not just the first. |
-| `MAGIC_CHECK` | Check the magic database for consistency and print warnings to stderr. |
-| `MAGIC_PRESERVE_ATIME` | On systems that support utime(3) or utimes(2), attempt to preserve the access time of files analysed. |
-| `MAGIC_RAW` | Don't translate unprintable characters to a \ooo octal representation. |
-| `MAGIC_ERROR` | Treat operating system errors while trying to open files and follow symlinks as real errors, instead of printing them in the magic buffer. |
-| `MAGIC_MIME_ENCODING` | Return a MIME encoding, instead of a textual description. |
-| `MAGIC_MIME` | Shorthand for `MAGIC_MIME_TYPE \| MAGIC_MIME_ENCODING`. |
-| `MAGIC_APPLE` | Return the Apple creator and type. |
-| `MAGIC_EXTENSION` | Return a slash-separated list of extensions for this file type. |
-| `MAGIC_COMPRESS_TRANSP` | Don't report on compression, only report about the uncompressed data. |
-| `MAGIC_NO_COMPRESS_FORK` | Don't allow decompressors that use fork. |
-| `MAGIC_NODESC` | Shorthand for `MAGIC_EXTENSION \| MAGIC_MIME \| MAGIC_APPLE`. |
-| `MAGIC_NO_CHECK_COMPRESS` | Don't look inside compressed files. |
-| `MAGIC_NO_CHECK_TAR` | Don't examine tar files. |
-| `MAGIC_NO_CHECK_SOFT` | Don't consult magic files. |
-| `MAGIC_NO_CHECK_APPTYPE` | Don't check for EMX application type (only on EMX). |
-| `MAGIC_NO_CHECK_ELF` | Don't print ELF details. |
-| `MAGIC_NO_CHECK_TEXT` | Don't check for various types of text files. |
-| `MAGIC_NO_CHECK_CDF` | Don't get extra information on MS Composite Document Files. |
-| `MAGIC_NO_CHECK_CSV` | Don't examine CSV files. |
-| `MAGIC_NO_CHECK_TOKENS` | Don't look for known tokens inside ascii files. |
-| `MAGIC_NO_CHECK_ENCODING` | Don't check text encodings. |
-| `MAGIC_NO_CHECK_JSON` | Don't examine JSON files. |
-| `MAGIC_NO_CHECK_SIMH` | Don't examine SIMH tape files. |
-| `MAGIC_NO_CHECK_BUILTIN` | No built-in tests; only consult the magic file. Shorthand for `MAGIC_NO_CHECK_COMPRESS \| MAGIC_NO_CHECK_TAR \| MAGIC_NO_CHECK_APPTYPE \| MAGIC_NO_CHECK_ELF \| MAGIC_NO_CHECK_TEXT \| MAGIC_NO_CHECK_CSV \| MAGIC_NO_CHECK_CDF \| MAGIC_NO_CHECK_TOKENS \| MAGIC_NO_CHECK_ENCODING \| MAGIC_NO_CHECK_JSON \| MAGIC_NO_CHECK_SIMH`. |
-| `MAGIC_NO_CHECK_ASCII` | Defined for backwards compatibility. Renamed from MAGIC_NO_CHECK_TEXT. |
-| `MAGIC_NO_CHECK_FORTRAN` | Don't check ascii/fortran. Defined for backwards compatibility; does nothing. |
-| `MAGIC_NO_CHECK_TROFF` | Don't check ascii/troff. Defined for backwards compatibility; does nothing. |
+| Flag | Symbol | Description |
+| --- | --- | --- |
+| `MAGIC_NONE` | `:none` | No special handling. |
+| `MAGIC_DEBUG` | `:debug` | Print debugging messages to stderr. |
+| `MAGIC_SYMLINK` | `:symlink` | If the file queried is a symlink, follow it. |
+| `MAGIC_COMPRESS` | `:compress` | If the file is compressed, unpack it and look at the contents. |
+| `MAGIC_DEVICES` | `:devices` | If the file is a block or character special device, then open the device and try to look in its contents. |
+| `MAGIC_MIME_TYPE` | `:mime_type` | Return a MIME type string, instead of a textual description. |
+| `MAGIC_CONTINUE` | `:continue` | Return all matches, not just the first. |
+| `MAGIC_CHECK` | `:check` | Check the magic database for consistency and print warnings to stderr. |
+| `MAGIC_PRESERVE_ATIME` | `:preserve_atime` | On systems that support utime(3) or utimes(2), attempt to preserve the access time of files analysed. |
+| `MAGIC_RAW` | `:raw` | Don't translate unprintable characters to a \ooo octal representation. |
+| `MAGIC_ERROR` | `:error` | Treat operating system errors while trying to open files and follow symlinks as real errors, instead of printing them in the magic buffer. |
+| `MAGIC_MIME_ENCODING` | `:mime_encoding` | Return a MIME encoding, instead of a textual description. |
+| `MAGIC_MIME` | `:mime` | Shorthand for `MAGIC_MIME_TYPE \| MAGIC_MIME_ENCODING`. |
+| `MAGIC_APPLE` | `:apple` | Return the Apple creator and type. |
+| `MAGIC_EXTENSION` | `:extension` | Return a slash-separated list of extensions for this file type. |
+| `MAGIC_COMPRESS_TRANSP` | `:compress_transp` | Don't report on compression, only report about the uncompressed data. |
+| `MAGIC_NO_COMPRESS_FORK` | `:no_compress_fork` | Don't allow decompressors that use fork. |
+| `MAGIC_NODESC` | `:nodesc` | Shorthand for `MAGIC_EXTENSION \| MAGIC_MIME \| MAGIC_APPLE`. |
+| `MAGIC_NO_CHECK_COMPRESS` | `:no_check_compress` | Don't look inside compressed files. |
+| `MAGIC_NO_CHECK_TAR` | `:no_check_tar` | Don't examine tar files. |
+| `MAGIC_NO_CHECK_SOFT` | `:no_check_soft` | Don't consult magic files. |
+| `MAGIC_NO_CHECK_APPTYPE` | `:no_check_apptype` | Don't check for EMX application type (only on EMX). |
+| `MAGIC_NO_CHECK_ELF` | `:no_check_elf` | Don't print ELF details. |
+| `MAGIC_NO_CHECK_TEXT` | `:no_check_text` | Don't check for various types of text files. |
+| `MAGIC_NO_CHECK_CDF` | `:no_check_cdf` | Don't get extra information on MS Composite Document Files. |
+| `MAGIC_NO_CHECK_CSV` | `:no_check_csv` | Don't examine CSV files. |
+| `MAGIC_NO_CHECK_TOKENS` | `:no_check_tokens` | Don't look for known tokens inside ascii files. |
+| `MAGIC_NO_CHECK_ENCODING` | `:no_check_encoding` | Don't check text encodings. |
+| `MAGIC_NO_CHECK_JSON` | `:no_check_json` | Don't examine JSON files. |
+| `MAGIC_NO_CHECK_SIMH` | `:no_check_simh` | Don't examine SIMH tape files. |
+| `MAGIC_NO_CHECK_BUILTIN` | `:no_check_builtin` | No built-in tests; only consult the magic file. Shorthand for `MAGIC_NO_CHECK_COMPRESS \| MAGIC_NO_CHECK_TAR \| MAGIC_NO_CHECK_APPTYPE \| MAGIC_NO_CHECK_ELF \| MAGIC_NO_CHECK_TEXT \| MAGIC_NO_CHECK_CSV \| MAGIC_NO_CHECK_CDF \| MAGIC_NO_CHECK_TOKENS \| MAGIC_NO_CHECK_ENCODING \| MAGIC_NO_CHECK_JSON \| MAGIC_NO_CHECK_SIMH`. |
+| `MAGIC_NO_CHECK_ASCII` | `:no_check_ascii` | Defined for backwards compatibility. Renamed to `MAGIC_NO_CHECK_TEXT`. |
+| `MAGIC_NO_CHECK_FORTRAN` | `:no_check_fortran` | Don't check ascii/fortran. Defined for backwards compatibility; does nothing. |
+| `MAGIC_NO_CHECK_TROFF` | `:no_check_troff` | Don't check ascii/troff. Defined for backwards compatibility; does nothing. |
 
 ### Parameters
 
-| Parameter | Description |
-| --- | --- |
-| `MAGIC_PARAM_INDIR_MAX` | How many levels of recursion will be followed for indirect magic entries. Default is 50. |
-| `MAGIC_PARAM_NAME_MAX` | The maximum number of calls for name/use. Default is 50. |
-| `MAGIC_PARAM_ELF_PHNUM_MAX` | How many ELF program sections will be processed. Default is 2,048. |
-| `MAGIC_PARAM_ELF_SHNUM_MAX` | How many ELF sections will be processed. Default is 32,768. |
-| `MAGIC_PARAM_ELF_NOTES_MAX` | How many ELF notes will be processed. Default is 256. |
-| `MAGIC_PARAM_REGEX_MAX` | Length limit for REGEX searches. Default is 8,192. |
-| `MAGIC_PARAM_BYTES_MAX` | Maximum number of bytes to look at inside a file. Default is 7,340,032. |
-| `MAGIC_PARAM_ENCODING_MAX` | Maximum number of bytes to scan for encoding. Default is 65,536. |
-| `MAGIC_PARAM_ELF_SHSIZE_MAX` | Maximum ELF section size to process. Default is 134,217,728. |
+| Parameter | Symbol | Description |
+| --- | --- | --- |
+| `MAGIC_PARAM_INDIR_MAX` | `:param_indir_max` | How many levels of recursion will be followed for indirect magic entries. Default is 50. |
+| `MAGIC_PARAM_NAME_MAX` | `:param_name_max` | The maximum number of calls for name/use. Default is 50. |
+| `MAGIC_PARAM_ELF_PHNUM_MAX` | `:param_elf_phnum_max` | How many ELF program sections will be processed. Default is 2,048. |
+| `MAGIC_PARAM_ELF_SHNUM_MAX` | `:param_elf_shnum_max` | How many ELF sections will be processed. Default is 32,768. |
+| `MAGIC_PARAM_ELF_NOTES_MAX` | `:param_elf_notes_max` | How many ELF notes will be processed. Default is 256. |
+| `MAGIC_PARAM_REGEX_MAX` | `:param_regex_max` | Length limit for REGEX searches. Default is 8,192. |
+| `MAGIC_PARAM_BYTES_MAX` | `:param_bytes_max` | Maximum number of bytes to look at inside a file. Default is 7,340,032. |
+| `MAGIC_PARAM_ENCODING_MAX` | `:param_encoding_max` | Maximum number of bytes to scan for encoding. Default is 65,536. |
+| `MAGIC_PARAM_ELF_SHSIZE_MAX` | `:param_elf_shsize_max` | Maximum ELF section size to process. Default is 134,217,728. |
 
 
 ## Methods
