@@ -1,24 +1,27 @@
-gem 'test-unit' unless ENV.fetch("USE_TEST_UNIT", '').downcase == 'no'
+# frozen_string_literal: true
+
+gem 'test-unit' unless ENV.fetch('USE_TEST_UNIT', '').casecmp('no').zero?
 
 require 'test/unit'
 require 'filemagic'
+require 'fileutils'
 
-class TestFileMagic < Test::Unit::TestCase
+class TestFileMagic < Test::Unit::TestCase # :nodoc:
   magic_version, origin = FileMagic.magic_version
   MAGIC_VERSION = magic_version.delete('.').to_i
 
-  warn <<-EOT
+  warn <<~INFO
 
-magic version: #{magic_version}#{" (#{origin})" if origin}
-library version: #{FileMagic.library_version}
-magic file from #{FileMagic.path}
+  magic version: #{magic_version}#{" (#{origin})" if origin}
+  library version: #{FileMagic.library_version}
+  magic file from #{FileMagic.path}
 
-  EOT
+  INFO
 
   # remove perl.mgc if it exists
   def self.rm_perl_mgc
     pmp = File.join(File.dirname(__FILE__), 'perl.mgc')
-    File.unlink(pmp) if File.exist?(pmp)
+    FileUtils.rm_f(pmp)
   end
 
   def self.startup
@@ -33,7 +36,7 @@ magic file from #{FileMagic.path}
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
 
     python_script = match_version(
-      0   => 'a python script, ASCII text executable',
+        0 => 'a python script, ASCII text executable',
       511 => 'Python script, ASCII text executable'
     )
 
@@ -49,7 +52,7 @@ magic file from #{FileMagic.path}
       if File.symlink?(path_to('pylink'))
         res = fm.file(path_to('pylink'))
         assert_equal(match_version(
-          0   => "symbolic link to `pyfile'",
+            0 => "symbolic link to `pyfile'",
           522 => 'symbolic link to pyfile'
         ), res.strip)
       end
@@ -68,7 +71,7 @@ magic file from #{FileMagic.path}
     rescue NotImplementedError
       # ignore
     ensure
-      File.unlink('test/pylink') if File.exist?('test/pylink')
+      FileUtils.rm_f('test/pylink')
     end
 
     fm.close
@@ -77,8 +80,12 @@ magic file from #{FileMagic.path}
 
     res = fm.file(path_to('pyfile-compressed.gz'))
     gzip_compressed = 'gzip compressed data, was "pyfile-compressed"'
-    assert_match(Gem.win_platform? ? /^#{gzip_compressed}/ :
-                 /^#{python_script} \(#{gzip_compressed}/, res)
+
+    if Gem.win_platform?
+      assert_match(/^#{gzip_compressed}/, res)
+    else
+      assert_match(/^#{python_script} \(#{gzip_compressed}/, res)
+    end
 
     fm.close
   end
@@ -100,14 +107,14 @@ magic file from #{FileMagic.path}
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
 
     python_script = match_version(
-      0   => 'a python script, ASCII text executable',
+        0 => 'a python script, ASCII text executable',
       511 => 'Python script, ASCII text executable'
     )
 
-    fd_for('pyfile') { |fd|
+    fd_for('pyfile') do |fd|
       res = fm.descriptor(fd)
       assert_equal(python_script, res)
-    }
+    end
 
     # The following block ensures that symlinks are only tested on systems
     # that support them.
@@ -116,48 +123,53 @@ magic file from #{FileMagic.path}
       File.symlink('pyfile', 'test/pylink')
 
       if File.symlink?(path_to('pylink'))
-        fd_for('pylink') { |fd|
+        fd_for('pylink') do |fd|
           res = fm.descriptor(fd)
           assert_equal(python_script, res.strip)
-        }
+        end
       end
 
       fm.close
       fm = FileMagic.new(FileMagic::MAGIC_SYMLINK)
 
-      fd_for('pylink') { |fd|
+      fd_for('pylink') do |fd|
         res = fm.descriptor(fd)
         assert_equal(python_script, res)
-      }
+      end
 
       fm.close
       fm = FileMagic.new(FileMagic::MAGIC_SYMLINK | FileMagic::MAGIC_MIME)
 
-      fd_for('pylink') { |fd|
+      fd_for('pylink') do |fd|
         res = fm.descriptor(fd)
         assert_equal('text/plain; charset=us-ascii', res)
-      }
+      end
     rescue NotImplementedError
       # ignore
     ensure
-      File.unlink('test/pylink') if File.exist?('test/pylink')
+      FileUtils.rm_f('test/pylink')
     end
 
     fm.close
     fm = FileMagic.new(FileMagic::MAGIC_COMPRESS)
 
-    fd_for('pyfile-compressed.gz') { |fd|
+    fd_for('pyfile-compressed.gz') do |fd|
       res = fm.descriptor(fd)
       gzip_compressed = 'gzip compressed data, was "pyfile-compressed"'
-      assert_match(Gem.win_platform? ? /^#{gzip_compressed}/ :
-                   /^#{python_script} \(#{gzip_compressed}/, res)
-    }
+
+      if Gem.win_platform?
+        assert_match(/^#{gzip_compressed}/, res)
+      else
+        assert_match(/^#{python_script} \(#{gzip_compressed}/, res)
+      end
+    end
 
     fm.close
   end
 
   def test_check
     return if Gem.win_platform?
+
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
     res = silence_stderr { fm.check(path_to('perl')) }
     fm.close
@@ -184,26 +196,30 @@ magic file from #{FileMagic.path}
 
   def test_check_old_magic
     return if MAGIC_VERSION <= 509
+
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
     res = silence_stderr { fm.check(path_to('old-perl.mgc')) }
     fm.close
     assert(match_version(
-      0   => res,
+        0 => res,
       539 => !res
     ))
   end
 
   def test_block
     block_fm = nil
-    res = FileMagic.open(FileMagic::MAGIC_NONE) { |fm|
+
+    res = FileMagic.open(FileMagic::MAGIC_NONE) do |fm|
       block_fm = fm
       fm.file(path_to('pyfile'))
-    }
+    end
+
     assert_equal(match_version(
-      0   => 'a python script, ASCII text executable',
+        0 => 'a python script, ASCII text executable',
       511 => 'Python script, ASCII text executable'
     ), res)
-    assert block_fm.closed?
+
+    assert_predicate(block_fm, :closed?)
   end
 
   def test_flags_to_int
@@ -211,12 +227,12 @@ magic file from #{FileMagic.path}
     assert_equal(0, FileMagic.flags([FileMagic::MAGIC_NONE]))
     assert_equal(0, FileMagic.flags([:none]))
     assert_equal(0, FileMagic.flags([]))
-    assert_equal(1072, FileMagic.flags([:mime, :continue]))
+    assert_equal(1072, FileMagic.flags(%i[mime continue]))
   end
 
   def test_setflags
     fm = FileMagic.new(FileMagic::MAGIC_NONE)
-    assert_equal([], fm.flags)
+    assert_empty(fm.flags)
     fm.flags = FileMagic::MAGIC_SYMLINK
     assert_equal([:symlink], fm.flags)
     fm.close
@@ -224,7 +240,7 @@ magic file from #{FileMagic.path}
 
   def test_abbr
     fm = FileMagic.new(:mime, :continue)
-    assert_equal([:mime_type, :continue, :mime_encoding], fm.flags)
+    assert_equal(%i[mime_type continue mime_encoding], fm.flags)
     fm.flags = :symlink
     assert_equal([:symlink], fm.flags)
     fm.close
@@ -233,9 +249,9 @@ magic file from #{FileMagic.path}
   def test_close
     fm = FileMagic.new
     fm.close
-    assert fm.closed?
+    assert_predicate(fm, :closed?)
     fm.close
-    assert fm.closed?
+    assert_predicate(fm, :closed?)
   end
 
   def test_c_file
@@ -279,20 +295,20 @@ magic file from #{FileMagic.path}
 
   def test_abbrev_mime_type
     fm = FileMagic.mime
-
-    refute fm.simplified?
+    refute_predicate(fm, :simplified?)
 
     # TODO: need to check file version to know what is expected
     # assert_equal('text/plain; charset=us-ascii', fm.file(path_to('perl')))
     assert_equal('text/x-file; charset=us-ascii', fm.file(path_to('perl')))
 
     fm.simplified = true
-    assert fm.simplified?
+    assert_predicate(fm, :simplified?)
+
     # TODO: ditto
     # assert_equal('text/plain', fm.file(path_to('perl')))
     assert_equal('text/x-file', fm.file(path_to('perl')))
     assert_equal(match_version(
-      0   => 'application/vnd.ms-office',
+        0 => 'application/vnd.ms-office',
       511 => 'application/msword',
       514 => 'application/vnd.ms-office',
       539 => 'application/vnd.ms-excel'
@@ -303,14 +319,14 @@ magic file from #{FileMagic.path}
     fm1 = FileMagic.fm
     assert_equal(fm1, FileMagic.fm)
 
-    refute fm1.simplified?
+    refute_predicate(fm1, :simplified?)
     assert_equal('ASCII text', fm1.file(path_to('a-text-file')))
 
     fm2 = FileMagic.fm(:mime)
     assert_equal(fm2, FileMagic.fm(:mime))
     refute_equal(fm2, fm1)
 
-    refute fm2.simplified?
+    refute_predicate(fm2, :simplified?)
     assert_equal('text/plain; charset=us-ascii', fm2.file(path_to('a-text-file')))
 
     fm3 = FileMagic.fm(:mime, simplified: true)
@@ -318,7 +334,7 @@ magic file from #{FileMagic.path}
     refute_equal(fm3, fm2)
     refute_equal(fm3, fm1)
 
-    assert fm3.simplified?
+    assert_predicate(fm3, :simplified?)
     assert_equal('text/plain', fm3.file(path_to('a-text-file')))
   end
 
@@ -330,8 +346,8 @@ magic file from #{FileMagic.path}
 
   def fd_for(file)
     File.open(path_to(file)) { |f| yield f.fileno }
-  rescue Errno::EBADF => err
-    warn err.to_s
+  rescue Errno::EBADF => e
+    warn e
   end
 
   def silence_stderr
