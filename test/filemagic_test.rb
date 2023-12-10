@@ -254,6 +254,34 @@ class TestFileMagic < Test::Unit::TestCase # :nodoc:
     assert_predicate(fm, :closed?)
   end
 
+  def test_getparam
+    fm = FileMagic.new
+    return unless fm.respond_to?(:getparam)
+
+    assert_raises(TypeError) { fm.getparam([1]) }
+    assert_raises(TypeError) { fm.getparam(param: 8192) }
+    assert_raises(ArgumentError) { fm.getparam(:bogus) }
+    assert_raises(ArgumentError) { fm.getparam(8192) }
+
+    # getparam default value tests
+    [
+      [ FileMagic::MAGIC_PARAM_BYTES_MAX, :param_bytes_max, 7340032 ],
+      [ FileMagic::MAGIC_PARAM_ELF_NOTES_MAX, :param_elf_notes_max, 256 ],
+      [ FileMagic::MAGIC_PARAM_ELF_PHNUM_MAX, :param_elf_phnum_max, 2048 ],
+      [ FileMagic::MAGIC_PARAM_ELF_SHNUM_MAX, :param_elf_shnum_max, 32768 ],
+      [ FileMagic::MAGIC_PARAM_ELF_SHSIZE_MAX, :param_elf_shsize_max, 134217728 ],
+      [ FileMagic::MAGIC_PARAM_ENCODING_MAX, :param_encoding_max, 65536 ],
+      [ FileMagic::MAGIC_PARAM_INDIR_MAX, :param_indir_max, 50 ],
+      [ FileMagic::MAGIC_PARAM_NAME_MAX, :param_name_max, 50 ],
+      [ FileMagic::MAGIC_PARAM_REGEX_MAX, :param_regex_max, 8192 ],
+    ].each do |pc, ps, value|
+      if defined?(pc)
+        assert_equal(value, fm.getparam(pc))
+        assert_equal(value, fm.getparam(ps))
+      end
+    end
+  end
+
   def test_c_file
     fm = FileMagic.new
     fm.flags = FileMagic::MAGIC_NONE

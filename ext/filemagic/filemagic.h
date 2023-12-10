@@ -5,12 +5,13 @@
 #include <math.h>
 #include <errno.h>
 #include <magic.h>
+
 #ifdef HAVE_FILE_PATCHLEVEL_H
 #include <file/patchlevel.h>
 #endif
 
 #define GetMagicSet(obj, ms) {\
-  if (RTEST(rb_magic_closed_p(obj))) {\
+  if (RB_TEST(rb_magic_closed_p(obj))) {\
     rb_raise(rb_eRuntimeError, "closed stream");\
   }\
   else {\
@@ -43,7 +44,7 @@ rb_magic_##what(int argc, VALUE *argv, VALUE self) {\
     simple = rb_attr_get(self, rb_intern("@simplified"));\
   }\
 \
-  if (RTEST(simple)) {\
+  if (RB_TEST(simple)) {\
     rb_funcall(res, rb_intern("downcase!"), 0);\
 \
     return rb_funcall(res, rb_intern("slice"), 2,\
@@ -94,6 +95,9 @@ static VALUE rb_magic_list(int, VALUE*, VALUE);
 static VALUE rb_magic_load(int, VALUE*, VALUE);
 static VALUE rb_magic_check(int, VALUE*, VALUE);
 static VALUE rb_magic_compile(int, VALUE*, VALUE);
+
+static VALUE rb_magic_getparam(VALUE, VALUE);
+static VALUE rb_magic_setparam(VALUE, VALUE, VALUE);
 
 void Init_ruby_filemagic(void);
 

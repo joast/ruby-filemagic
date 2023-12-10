@@ -8,8 +8,9 @@ dir_config('gnurx')
 
 if have_library('magic', 'magic_open')
   if have_header('magic.h')
-    have_header('file/patchlevel.h')
+    have_header('file/patchlevel.h') # really old versions of file(1)
     have_func('magic_version')
+    have_func('magic_getparam')
     have_library('gnurx')
     create_makefile('filemagic/ruby_filemagic')
   else

@@ -44,7 +44,7 @@ rb_magic_flags(VALUE klass, VALUE flags) {
 
     switch (TYPE(f)) {
       case T_SYMBOL:
-        if (RTEST(g = rb_hash_aref(map, f))) {
+        if (RB_TEST(g = rb_hash_aref(map, f))) {
           f = g;
           /* fall through */
         }
@@ -150,7 +150,7 @@ static VALUE
 rb_magic_close(VALUE self) {
   magic_t ms;
 
-  if (RTEST(rb_magic_closed_p(self))) {
+  if (RB_TEST(rb_magic_closed_p(self))) {
     return Qnil;
   }
 
@@ -240,6 +240,93 @@ RB_MAGIC_APPRENTICE(check)
 /* Compiles a magic database file */
 RB_MAGIC_APPRENTICE(compile)
 
+#if defined(HAVE_MAGIC_GETPARAM)
+static VALUE
+rb_magic_getparam(VALUE self, VALUE param) {
+    VALUE   map = rb_const_get(cFileMagic, rb_intern("PARAMETERS_BY_SYM"));
+    magic_t ms; /* magic cookie */
+    int     pi; /* parameter as integer */
+    size_t  pv; /* parameter value */
+    int     r;  /* magic_getparam() result */
+    VALUE   t;  /* temporary -- value from hash lookup or inspect call */
+
+    GetMagicSet(self, ms);
+
+    switch (TYPE(param)) {
+    case T_SYMBOL:
+        if (!RB_TEST(t = rb_hash_aref(map, param))) {
+            param = rb_funcall(param, rb_intern("inspect"), 0);
+            rb_raise(rb_eArgError, "no such parameter: %s",
+                     StringValueCStr(param));
+        }
+
+        pi = NUM2INT(t);
+        break;
+    case T_FIXNUM:
+        pi = NUM2INT(param);
+        break;
+    default:
+        rb_raise(rb_eTypeError,
+                 "wrong argument type %s (expected Fixnum or Symbol)",
+                 rb_obj_classname(param));
+    }
+
+    switch (pi) {
+        /* begin size_t parameters */
+    #if defined(MAGIC_PARAM_INDIR_MAX)
+    case MAGIC_PARAM_INDIR_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_NAME_MAX)
+    case MAGIC_PARAM_NAME_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_ELF_PHNUM_MAX)
+    case MAGIC_PARAM_ELF_PHNUM_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_ELF_SHNUM_MAX)
+    case MAGIC_PARAM_ELF_SHNUM_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_ELF_NOTES_MAX)
+    case MAGIC_PARAM_ELF_NOTES_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_REGEX_MAX)
+    case MAGIC_PARAM_REGEX_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_BYTES_MAX)
+    case MAGIC_PARAM_BYTES_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_ENCODING_MAX)
+    case MAGIC_PARAM_ENCODING_MAX:
+    #endif
+    #if defined(MAGIC_PARAM_ELF_SHSIZE_MAX)
+    case MAGIC_PARAM_ELF_SHSIZE_MAX:
+    #endif
+        r = magic_getparam(ms, pi, &pv);
+
+        if (r == 0) { /* success */
+            return INT2FIX(pv); /* convert pv to ruby value */
+        }
+        else {
+            /* this should never happen... */
+            t = rb_funcall(param, rb_intern("inspect"), 0);
+            rb_raise(rb_eArgError, "unknown parameter value: %s",
+                     StringValueCStr(t));
+        }
+        /* end size_t parameters */
+    default:
+        t = rb_funcall(param, rb_intern("inspect"), 0);
+        rb_raise(rb_eArgError, "unknown parameter: %s", StringValueCStr(t));
+    }
+
+    /* should not be reached */
+    return Qnil;
+}
+
+static VALUE
+rb_magic_setparam(VALUE self, VALUE param, VALUE value) {
+    return Qnil;
+}
+#endif
+
 void
 Init_ruby_filemagic() {
   char version[16] = "0";
@@ -273,6 +360,11 @@ Init_ruby_filemagic() {
   rb_define_method(cFileMagic, "load",       rb_magic_load,       -1);
   rb_define_method(cFileMagic, "check",      rb_magic_check,      -1);
   rb_define_method(cFileMagic, "compile",    rb_magic_compile,    -1);
+
+  #if defined(HAVE_MAGIC_GETPARAM)
+  rb_define_method(cFileMagic, "getparam",   rb_magic_getparam,    1);
+  rb_define_method(cFileMagic, "setparam",   rb_magic_setparam,    2);
+  #endif
 
   rb_alias(cFileMagic, rb_intern("valid?"), rb_intern("check"));
 
